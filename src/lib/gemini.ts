@@ -1,18 +1,16 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const apiKey = process.env.GEMINI_API_KEY;
-
-if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is not defined in environment variables');
-}
-
-const genAI = new GoogleGenerativeAI(apiKey);
-
-export const geminiModel = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash'
-});
+const getGeminiModel = () => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        throw new Error('GEMINI_API_KEY is not defined in environment variables');
+    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+    return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+};
 
 export async function generateMenuFromDishes(dishes: string[]): Promise<string> {
+    const geminiModel = getGeminiModel();
     const prompt = `You are an expert catering chef for "Etheleen & Alma's Dream," a premium catering service.
 
 A client has selected their top 3 favorite dishes: ${dishes.join(', ')}.
@@ -31,6 +29,7 @@ Format the menu elegantly with descriptions. Make it feel luxurious and high-end
 }
 
 export async function estimateCateringCost(menuContent: string, guestCount: number = 50): Promise<number> {
+    const geminiModel = getGeminiModel();
     const prompt = `You are a catering cost estimator. Based on the following menu and assuming ${guestCount} guests, provide ONLY a numeric estimate in USD (no currency symbol, just the number).
 
 Menu:
