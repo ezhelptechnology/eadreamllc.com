@@ -3,143 +3,107 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ChevronRight, Star, Sparkles, Award } from 'lucide-react';
+import { ChevronRight, Award } from 'lucide-react';
 
 const Hero = () => {
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden pt-20 bg-gradient-to-br from-background via-secondary/10 to-background">
-            {/* Animated Background Elements */}
-            <div className="absolute top-20 right-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-20 left-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <section className="relative min-h-screen flex items-center overflow-hidden pt-36 pb-20 bg-background">
+            {/* Background Texture/Pattern - Subtle Noise for premium feel */}
+            <div className="absolute inset-0 z-0 opacity-[0.4]" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
+            }}></div>
 
-            <div className="container grid lg:grid-cols-2 gap-16 items-center relative z-10">
+            {/* Subtle Gradient Spots */}
+            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/3 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute bottom-[-10%] left-[-5%] w-[700px] h-[700px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div className="container grid lg:grid-cols-2 gap-12 lg:gap-24 items-center relative z-10">
                 {/* Left Content */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="flex flex-col space-y-8"
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col space-y-10 text-center lg:text-left items-center lg:items-start"
                 >
-                    {/* Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2, duration: 0.6 }}
-                        className="inline-flex items-center gap-2 self-start glass px-6 py-3 rounded-full border border-primary/20"
-                    >
-                        <Sparkles size={18} className="text-accent" />
-                        <span className="text-sm font-semibold text-primary">Premier Catering Excellence</span>
-                    </motion.div>
+                    {/* Main Heading */}
+                    <div className="relative">
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 1 }}
+                            className="text-6xl md:text-7xl lg:text-8xl font-serif text-primary leading-[0.95]"
+                        >
+                            Taste the <br />
+                            <span className="italic text-accent font-light">Extraordinary</span>
+                        </motion.h1>
+                        <motion.div
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ delay: 0.8, duration: 1, ease: "circOut" }}
+                            className="h-[1px] w-24 bg-accent/50 mt-8 mx-auto lg:mx-0"
+                        ></motion.div>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5, duration: 1 }}
+                            className="text-lg md:text-xl text-foreground/60 mt-8 max-w-lg leading-relaxed font-sans font-light tracking-wide"
+                        >
+                            Elevating your most precious moments with exquisite, bespoke menus and flawless service. Experience the art of catering.
+                        </motion.p>
+                    </div>
 
-                    {/* Main Heading - BOLD like FlexCatering */}
-                    <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight">
-                        Where <span className="text-gradient italic">Dreams</span> <br />
-                        Meet <span className="text-primary">Culinary</span><br />
-                        <span className="text-accent">Perfection</span>
-                    </h1>
-
-                    {/* Subheading */}
-                    <p className="text-xl md:text-2xl text-foreground/70 max-w-xl leading-relaxed font-light">
-                        Elevate your events with bespoke catering experiences crafted by our award-winning chefs.
-                        From intimate gatherings to grand celebrations.
-                    </p>
-
-                    {/* CTAs - Larger, more prominent */}
-                    <div className="flex flex-wrap gap-6 pt-4">
-                        <button className="btn-primary text-lg px-10 py-5 flex items-center gap-3 shadow-2xl hover:shadow-primary/30 transition-all">
+                    {/* CTAs */}
+                    <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto pt-4">
+                        <button className="btn-primary flex items-center justify-center gap-3 shadow-2xl hover:shadow-primary/20 tracking-[0.2em] text-sm py-5 px-10">
                             Start Your Journey
-                            <ChevronRight size={24} />
                         </button>
-                        <button className="glass py-5 px-10 rounded-full font-semibold border-2 border-primary/30 hover:border-primary hover:bg-primary/5 transition-all text-lg">
-                            View Our Portfolio
+                        <button className="text-sm px-10 py-5 border border-primary/20 font-sans font-medium uppercase tracking-[0.2em] hover:bg-primary/5 hover:border-primary text-primary transition-all duration-500">
+                            View Our Menus
                         </button>
                     </div>
 
-                    {/* Social Proof */}
-                    <div className="flex flex-wrap items-center gap-8 pt-8 border-t border-primary/10">
-                        <div className="flex items-center gap-3">
-                            <div className="flex -space-x-2">
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                    <div key={i} className="w-12 h-12 rounded-full border-3 border-background overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                                        <Award size={20} className="text-primary" />
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="text-left">
-                                <div className="flex text-amber-500 mb-1">
-                                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={16} fill="currentColor" />)}
-                                </div>
-                                <p className="text-sm font-semibold text-foreground">500+ Five-Star Events</p>
-                            </div>
+                    {/* Stats/Trust - Simplified and Elegant */}
+                    <div className="pt-8 flex items-center gap-12 border-t border-primary/10 w-full lg:w-auto justify-center lg:justify-start">
+                        <div className="text-center lg:text-left">
+                            <div className="text-4xl font-serif text-primary">500<span className="text-accent text-2xl">+</span></div>
+                            <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 mt-1">Events Hosted</div>
                         </div>
-
-                        <div className="h-12 w-px bg-primary/20"></div>
-
-                        <div>
-                            <div className="text-4xl font-bold text-primary">15+</div>
-                            <p className="text-sm text-foreground/60 font-medium">Years of Excellence</p>
+                        <div className="w-px h-12 bg-primary/10"></div>
+                        <div className="text-center lg:text-left">
+                            <div className="text-4xl font-serif text-primary">15<span className="text-accent text-2xl">+</span></div>
+                            <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 mt-1">Years Experience</div>
                         </div>
                     </div>
                 </motion.div>
 
-                {/* Right Image Grid - More Dynamic */}
+                {/* Right Image Grid - User Images */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-                    className="relative h-[600px] lg:h-[700px]"
+                    transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
+                    className="relative h-[600px] lg:h-[750px] w-full"
                 >
-                    {/* Main Image */}
-                    <div className="absolute top-0 right-0 w-[85%] h-[70%] rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white/50">
+                    {/* Main Image Layer (Salmon Steak) */}
+                    <div className="absolute top-0 right-0 lg:right-5 w-[85%] h-[75%] bg-zinc-100 rounded-tr-[120px] rounded-bl-[120px] overflow-hidden shadow-2xl z-10 hover-scale-img group border border-white/50">
+                        <div className="absolute inset-0 bg-primary/5 z-10 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-0"></div>
                         <Image
-                            src="/hero-platter.png"
-                            alt="Gourmet Catering Platter"
+                            src="/food-salmon-main.jpg"
+                            alt="Gourmet Salmon Dish"
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
                             priority
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
                     </div>
 
-                    {/* Secondary Image - Event Setup */}
-                    <motion.div
-                        animate={{ y: [0, -10, 0] }}
-                        transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-                        className="absolute bottom-0 left-0 w-[70%] h-[45%] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/50"
-                    >
+                    {/* Secondary Image Layer (Appetizers) */}
+                    <div className="absolute bottom-10 left-0 lg:left-0 w-[60%] h-[45%] bg-zinc-50 rounded-tl-[80px] rounded-br-[80px] overflow-hidden shadow-2xl z-20 border-8 border-background hover-scale-img group">
                         <Image
-                            src="/event-setup.png"
-                            alt="Elegant Event Setup"
+                            src="/food-appetizers.jpg"
+                            alt="Elegant Appetizers"
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
                         />
-                    </motion.div>
-
-                    {/* Floating Stats Card */}
-                    <motion.div
-                        animate={{ y: [0, 15, 0] }}
-                        transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                        className="absolute top-[45%] left-[10%] glass p-6 rounded-2xl shadow-xl border border-white/30 backdrop-blur-xl"
-                    >
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-full bg-primary/10">
-                                <Sparkles size={28} className="text-primary" />
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold text-primary">100%</div>
-                                <div className="text-xs text-foreground/70 font-medium">Bespoke Menus</div>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Floating Award Badge */}
-                    <motion.div
-                        animate={{ rotate: [0, 5, -5, 0] }}
-                        transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-                        className="absolute top-[10%] left-[5%] glass p-4 rounded-full shadow-xl border border-accent/30"
-                    >
-                        <Award size={32} className="text-accent" />
-                    </motion.div>
+                    </div>
                 </motion.div>
             </div>
         </section>

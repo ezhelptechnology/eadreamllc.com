@@ -27,65 +27,73 @@ const Header = () => {
   ];
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'glass py-3' : 'bg-transparent py-6'
-      }`}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-3' : 'bg-transparent py-6'
+        }`}
       style={{
         borderBottom: isScrolled ? '1px solid var(--glass-border)' : 'none',
       }}
     >
-      <div className="container flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
-            <Image 
-              src="/logo.jpg" 
-              alt="Etheleen & Alma's Dream Logo" 
+      <div className="container flex items-center justify-between h-full relative">
+        {/* 1. Logo Section (Left) */}
+        <Link href="/" className="flex items-center gap-3 relative z-10">
+          <div className="relative w-12 h-12 md:w-14 md:h-14">
+            <Image
+              src="/logo.png"
+              alt="Etheleen & Alma's Dream Logo"
               fill
-              className="object-cover"
+              className="object-contain"
+              priority
             />
           </div>
-          <span className={`text-xl font-bold tracking-tight ${isScrolled ? 'text-primary' : 'text-primary'}`}>
-            Etheleen & Alma's <span className="italic text-accent">Dream</span>
-          </span>
+          <div className="hidden lg:flex flex-col">
+            <span className="text-xl font-bold font-serif leading-none tracking-tight text-primary">
+              Etheleen & Alma's
+            </span>
+            <span className="text-sm font-medium tracking-[0.2em] text-accent uppercase">
+              Dream, LLC
+            </span>
+          </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* 2. Navigation (Center - Absolute centered) */}
+        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
+            <Link
+              key={link.name}
               href={link.href}
-              className="text-sm font-semibold uppercase tracking-wider hover:text-accent transition-colors"
+              className="text-[13px] font-bold uppercase tracking-[0.15em] text-foreground/80 hover:text-primary transition-all relative group"
             >
               {link.name}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </Link>
           ))}
-          <Link href="/admin" className="text-xs text-primary/60 hover:text-primary transition-colors">
-            Admin
-          </Link>
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
-          <button className="btn-primary flex items-center gap-2 text-sm">
-            <Mail size={16} />
-            Book Now
+        {/* 3. CTA & Mobile Toggle (Right) */}
+        <div className="flex items-center gap-4 relative z-10">
+          <Link href="/admin" className="hidden lg:block text-xs font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mr-2">
+            Admin
+          </Link>
+          <button className="hidden md:flex btn-primary items-center gap-2 text-xs font-bold px-6 py-3">
+            <Mail size={14} />
+            Order Service
+          </button>
+
+          {/* Mobile Toggle */}
+          <button
+            className="md:hidden text-primary p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden text-primary"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
       </div>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -93,8 +101,8 @@ const Header = () => {
           >
             <div className="container py-8 flex flex-col gap-6 items-center">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
+                <Link
+                  key={link.name}
                   href={link.href}
                   className="text-lg font-semibold uppercase tracking-widest hover:text-accent transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -102,10 +110,10 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
-              <Link 
-                  href="/admin"
-                  className="text-sm font-medium text-primary/70"
-                  onClick={() => setIsMobileMenuOpen(false)}
+              <Link
+                href="/admin"
+                className="text-sm font-medium text-primary/70"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Admin Access
               </Link>

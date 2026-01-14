@@ -1,119 +1,75 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 
 :root {
-  --primary: #5a306d;
-  --primary-light: #7d4b91;
-  --secondary: #d8c8e0;
-  --accent: #b07d8e;
-  --background: #fdf8ff;
-  --foreground: #2a1b3d;
+  /* Logo Colors */
+  --primary: #613C70; /* Deep Purple */
+  --primary-light: #7D5A8C;
+  --secondary: #AE838E; /* Rose Gold / Muted Pink */
+  --accent: #AE838E; 
+  
+  /* Backgrounds */
+  --background: #FFFCFF; /* Very subtle warm white */
+  --foreground: #2a1b3d; /* Dark Purple/Black for text */
+  
   --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --shadow: 0 8px 32px 0 rgba(74, 38, 93, 0.15);
+  --glass-border: rgba(97, 60, 112, 0.1);
+  --shadow: 0 8px 32px 0 rgba(97, 60, 112, 0.1);
 
-  --font-serif: 'Playfair Display', serif;
-  --font-sans: 'Montserrat', sans-serif;
+  /* Fonts */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Jost', sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  scroll-behavior: smooth;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-p {
-  line-height: 1.6;
-  font-weight: 400;
-}
-
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow);
-}
-
-.premium-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-}
-
-.text-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-section {
-  padding: 6rem 0;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  outline: none;
-  font-family: var(--font-sans);
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(90, 48, 109, 0.3);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(90, 48, 109, 0.4);
-  background: var(--primary-light);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold text-foreground;
+    line-height: 1.1;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  body {
+    @apply bg-background text-foreground overflow-x-hidden antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.8s ease forwards;
+@layer components {
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white px-8 py-4 rounded-none font-sans font-medium uppercase tracking-widest transition-all duration-300 relative overflow-hidden;
+  }
+
+  .btn-primary:hover {
+    @apply bg-primary-light shadow-lg transform -translate-y-1;
+  }
+
+  /* Webflow Interaction Imitations */
+  .hover-scale-img {
+    @apply transition-transform duration-700 ease-out;
+  }
+  
+  .group:hover .hover-scale-img {
+    @apply scale-110;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
 }

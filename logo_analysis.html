@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Logo Analysis</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+        }
+
+        img {
+            max-width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="logo"
+        src="/Users/EzHelpTechnology/.gemini/antigravity/brain/b8850cc3-a809-4af5-845b-5f5873266380/uploaded_image_1768385703735.jpg"
+        alt="Logo" crossorigin="anonymous">
+    <script>
+        window.addEventListener('load', () => {
+            const img = document.getElementById('logo');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            // Simple color quantization extraction logic could go here, 
+            // but for now we will just let the agent look at it or running a script.
+            // basic center pixel check?
+            const data = ctx.getImageData(img.width / 2, img.height / 2, 1, 1).data;
+            console.log(`Center color: rgb(${data[0]}, ${data[1]}, ${data[2]})`);
+        });
+    </script>
+</body>
+
+</html>
