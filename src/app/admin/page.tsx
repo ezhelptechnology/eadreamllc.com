@@ -24,18 +24,32 @@ export default function AdminDashboard() {
     const [guestCount, setGuestCount] = useState(50);
     const [finalPrice, setFinalPrice] = useState('');
     const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetchRequests();
     }, []);
 
     const fetchRequests = async () => {
+        setIsLoading(true);
+        setError('');
         try {
             const res = await fetch('/api/admin/requests');
+            if (!res.ok) {
+                throw new Error(`Failed to fetch: ${res.status}`);
+            }
             const data = await res.json();
-            setRequests(data.requests);
-        } catch (error) {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            setRequests(data.requests || []);
+        } catch (error: any) {
             console.error('Error fetching requests:', error);
+            setError(error.message || 'Failed to load requests');
+            setRequests([]);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -127,13 +141,38 @@ export default function AdminDashboard() {
                     </motion.div>
                 )}
 
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-6 p-4 bg-red-50 rounded-2xl border border-red-200 flex items-center gap-3"
+                    >
+                        <AlertCircle size={20} className="text-red-500" />
+                        <div className="flex-1">
+                            <span className="text-sm font-medium text-red-900">{error}</span>
+                            <p className="text-xs text-red-600 mt-1">Check that the database is properly configured and Prisma client is generated.</p>
+                        </div>
+                        <button
+                            onClick={fetchRequests}
+                            className="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 rounded-full text-red-700 font-medium transition-colors"
+                        >
+                            Retry
+                        </button>
+                    </motion.div>
+                )}
+
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Requests List */}
                     <div className="lg:col-span-1">
                         <div className="glass p-6 rounded-3xl border border-primary/10">
                             <h2 className="text-2xl font-bold text-primary mb-6">Incoming Requests</h2>
                             <div className="space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar">
-                                {requests.length === 0 ? (
+                                {isLoading ? (
+                                    <div className="text-center py-12">
+                                        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mx-auto mb-4"></div>
+                                        <p className="text-foreground/40 text-sm">Loading requests...</p>
+                                    </div>
+                                ) : requests.length === 0 ? (
                                     <p className="text-foreground/40 text-center py-8">No requests yet</p>
                                 ) : (
                                     requests.map((request) => {
@@ -144,8 +183,8 @@ export default function AdminDashboard() {
                                                 whileHover={{ scale: 1.02 }}
                                                 onClick={() => setSelectedRequest(request)}
                                                 className={`p-4 rounded-2xl cursor-pointer transition-all ${selectedRequest?.id === request.id
-                                                        ? 'bg-primary/10 border-2 border-primary'
-                                                        : 'bg-white/50 border border-primary/10 hover:border-primary/30'
+                                                    ? 'bg-primary/10 border-2 border-primary'
+                                                    : 'bg-white/50 border border-primary/10 hover:border-primary/30'
                                                     }`}
                                             >
                                                 <div className="flex items-start justify-between mb-2">
@@ -153,8 +192,8 @@ export default function AdminDashboard() {
                                                         {new Date(request.createdAt).toLocaleDateString()}
                                                     </span>
                                                     <span className={`text-xs px-2 py-1 rounded-full ${request.status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
-                                                            request.status === 'GENERATED' ? 'bg-blue-100 text-blue-700' :
-                                                                'bg-green-100 text-green-700'
+                                                        request.status === 'GENERATED' ? 'bg-blue-100 text-blue-700' :
+                                                            'bg-green-100 text-green-700'
                                                         }`}>
                                                         {request.status}
                                                     </span>
