@@ -1,66 +1,72 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Hero from "@/components/Hero";
+import DishSelector from "@/components/DishSelector";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Hero />
+
+      {/* Services Preview Section */}
+      <section id="services" className="bg-white">
+        <div className="container text-center">
+          <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto mb-16">
+            <span className="text-accent font-bold uppercase tracking-widest text-xs">Our Expertise</span>
+            <h2 className="text-4xl md:text-5xl text-primary">Signature Catering Experiences</h2>
+            <div className="w-20 h-1 bg-secondary mt-2"></div>
+            <p className="text-foreground/70 mt-4 leading-relaxed">
+              From intimate gatherings to grand celebrations, we provide a full suite of catering services
+              designed to exceed your expectations.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { title: 'Corporate Events', desc: 'Sleek, professional catering that reflects your brand\'s excellence.' },
+              { title: 'Weddings', desc: 'Personalized menus that celebrate your unique love story.' },
+              { title: 'Private Dinners', desc: 'An intimate culinary journey in the comfort of your home.' },
+            ].map((service, i) => (
+              <div key={i} className="glass p-12 rounded-[2rem] hover:shadow-2xl transition-all group">
+                <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
+                  <span className="text-primary font-bold text-xl">{i + 1}</span>
+                </div>
+                <h3 className="text-2xl text-primary mb-4">{service.title}</h3>
+                <p className="text-foreground/60 text-sm leading-relaxed">{service.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* AI Bot Section */}
+      <section id="menu" className="bg-secondary/20">
+        <div className="container">
+          <div className="glass rounded-[3rem] p-12 md:p-24 overflow-hidden relative">
+            <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
+              <div>
+                <span className="text-accent font-bold uppercase tracking-widest text-xs">Taste the Future</span>
+                <h2 className="text-4xl md:text-6xl text-primary mt-4 mb-6 leading-tight">
+                  Design Your <br />
+                  <span className="italic">Perfect Menu</span>
+                </h2>
+                <p className="text-lg text-foreground/70 mb-8 max-w-md">
+                  Interact with our AI Culinary Guide to select your three favorite dishes.
+                  Our team will then craft a bespoke full-course menu inspired by your choices.
+                </p>
+
+                {/* AI Chat Bot Component */}
+                <div id="ai-chat-container">
+                  <DishSelector />
+                </div>
+              </div>
+              <div className="hidden md:block relative h-[600px] w-full">
+                <div className="absolute inset-0 bg-primary/5 rounded-3xl overflow-hidden border border-primary/10 flex items-center justify-center">
+                  <div className="text-accent/20 font-serif text-[200px] select-none opacity-50">EA</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }

@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model CateringRequest {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  favoriteDishes  String   // JSON string or comma-separated
+  status          String   @default("PENDING") // PENDING, GENERATED, REVIEWED, SENT
+  generatedMenu   Menu?
+}
+
+model Menu {
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
+  content           String          // The actual menu text/markdown
+  estimatedCost     Float
+  finalPrice        Float?
+  requestId         String          @unique
+  request           CateringRequest @relation(fields: [requestId], references: [id])
+}
