@@ -1,0 +1,14 @@
+{
+  "env": {
+    "GEMINI_API_KEY": "AIzaSyBmTAzYGkJVRSsqxb4nKyBSrTe_kOF2WZo",
+    "DATABASE_URL": "file:./eadreams.db",
+    "ADMIN_EMAIL": "yourmeal@eadreamllc.com"
+  },
+  "build": {
+    "env": {
+      "GEMINI_API_KEY": "AIzaSyBmTAzYGkJVRSsqxb4nKyBSrTe_kOF2WZo",
+      "DATABASE_URL": "file:./eadreams.db",
+      "ADMIN_EMAIL": "yourmeal@eadreamllc.com"
+    }
+  }
+}
