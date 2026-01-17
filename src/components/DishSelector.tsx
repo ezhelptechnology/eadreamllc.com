@@ -15,13 +15,14 @@ const DishSelector = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: "Welcome to Etheleen & Alma's Dream. I'm your culinary guide. We specialize in premium 'Pick-up-and-go' catering starting at just $9.00 per person. To help us customize our standard Slider & Sides package for you, could you share 3 dishes or flavor profiles you'd love to see as sliders?",
+            text: "Welcome to Etheleen & Alma's Dream. I'm your culinary guide. We specialize in premium 'Pick-up-and-go' slider packages ($25-$30 per person). To get started, could you share 3 dishes or proteins you'd love to see as sliders?",
             sender: 'bot',
             timestamp: new Date(),
         }
     ]);
     const [input, setInput] = useState('');
     const [dishes, setDishes] = useState<string[]>([]);
+    const [step, setStep] = useState<'sliders' | 'sides'>('sliders');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDone, setIsDone] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -43,21 +44,39 @@ const DishSelector = () => {
         };
 
         setMessages(prev => [...prev, userMessage]);
+        const currentInput = input.trim();
         setInput('');
         setIsSubmitting(true);
 
         // AI logic simulation
         setTimeout(() => {
-            const newDishes = [...dishes, input.trim()];
-            setDishes(newDishes);
-
             let botResponse = '';
-            if (newDishes.length < 3) {
-                botResponse = `That sounds delicious! I've noted down "${input.trim()}". What's your ${newDishes.length === 1 ? 'second' : 'third'} favorite dish?`;
-            } else {
-                botResponse = `Wonderful choices! I have your favorites: ${newDishes.join(', ')}. I'm sending these to our executive chefs now. They will generate a complete bespoke menu for you.`;
+
+            if (step === 'sliders') {
+                const newDishes = [...dishes, currentInput];
+                setDishes(newDishes);
+
+                if (newDishes.length < 3) {
+                    botResponse = `That sounds delicious! I've noted down "${currentInput}". What's your ${newDishes.length === 1 ? 'second' : 'third'} favorite protein or slider idea?`;
+                } else {
+                    setStep('sides');
+                    // Recommend sides based on proteins
+                    const isSeafood = newDishes.some(d => d.toLowerCase().includes('fish') || d.toLowerCase().includes('shrimp') || d.toLowerCase().includes('seafood') || d.toLowerCase().includes('crab'));
+                    const isSteak = newDishes.some(d => d.toLowerCase().includes('steak') || d.toLowerCase().includes('beef') || d.toLowerCase().includes('tenderloin'));
+
+                    let recommendedSides = "Creamy Mac & Cheese and a Fresh House Salad";
+                    if (isSeafood) {
+                        recommendedSides = "Citrus Cole Slaw and Roasted Garlic Potatoes";
+                    } else if (isSteak) {
+                        recommendedSides = "Truffle Mac & Cheese and Grilled Asparagus";
+                    }
+
+                    botResponse = `Wonderful choices! For those ${newDishes.join(', ')} sliders, I highly recommend pairing them with our ${recommendedSides}. Does that sound like a perfect match?`;
+                }
+            } else if (step === 'sides') {
+                botResponse = `Excellent! I've locked in your bespoke menu. I'm sending these details to our executive chefs now to finalize your proposal.`;
                 setIsDone(true);
-                sendChoiceToAdmin(newDishes);
+                sendChoiceToAdmin(dishes);
             }
 
             const botMessage: Message = {
@@ -95,11 +114,12 @@ const DishSelector = () => {
     const resetChat = () => {
         setMessages([{
             id: '1',
-            text: "Let's start over. What are your top 3 favorite dishes?",
+            text: "Let's start over. What are your top 3 favorite dishes or proteins for sliders?",
             sender: 'bot',
             timestamp: new Date(),
         }]);
         setDishes([]);
+        setStep('sliders');
         setIsDone(false);
     };
 
