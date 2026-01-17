@@ -11,22 +11,19 @@ export default function Home() {
 
       <Services />
 
-      <Testimonials />
-
       {/* AI Bot Section */}
       <section id="menu" className="bg-gradient-to-b from-secondary/20 to-white py-24">
         <div className="container">
           <div className="glass rounded-[3rem] p-12 md:p-20 overflow-hidden relative border border-primary/10">
             <div className="grid lg:grid-cols-2 gap-16 items-center relative z-10">
               <div>
-                <span className="text-accent font-bold uppercase tracking-widest text-sm">Taste the Future</span>
+                <span className="text-accent font-bold uppercase tracking-widest text-sm">Personalized Catering</span>
                 <h2 className="text-5xl md:text-6xl font-bold text-primary mt-6 mb-8 leading-tight">
-                  Design Your <br />
-                  <span className="text-gradient italic">Perfect Menu</span>
+                  Create My <br />
+                  <span className="text-gradient italic">Experience</span>
                 </h2>
                 <p className="text-xl text-foreground/70 mb-10 max-w-md leading-relaxed">
-                  Interact with our AI Culinary Guide to select your three favorite dishes.
-                  Our team will then craft a bespoke full-course menu inspired by your choices.
+                  Curation at your fingertips. Partner with our AI Guide to design a bespoke slider package tailored to your exact tastes.
                 </p>
 
                 {/* AI Chat Bot Component */}

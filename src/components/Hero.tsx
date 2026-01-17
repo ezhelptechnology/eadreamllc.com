@@ -48,7 +48,7 @@ const Hero = () => {
                             transition={{ delay: 0.5, duration: 1 }}
                             className="text-lg md:text-xl text-foreground/60 mt-8 max-w-lg leading-relaxed font-sans font-light tracking-wide"
                         >
-                            Elevating your most precious moments with exquisite, bespoke menus and flawless service. Experience the art of catering.
+                            Serving the Greater Charlotte area, with a willingness to travel to create the right experience for you. Elevating your most precious moments with exquisite, bespoke menus and flawless service.
                         </motion.p>
                     </div>
 

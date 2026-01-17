@@ -9,28 +9,54 @@ const getGeminiModel = () => {
     return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 };
 
-export async function generateMenuFromDishes(dishes: string[]): Promise<string> {
+export async function generateMenuFromDishes(selections: {
+    proteins: string[];
+    preparation: string;
+    sides: string;
+    bread: string;
+    allergies: string;
+}): Promise<string> {
     const geminiModel = getGeminiModel();
-    const prompt = `You are an expert catering chef for "Etheleen & Alma's Dream," a premium catering service specializing in high-quality, convenient "Pick-up-and-go" meals.
+    const prompt = `You are an expert catering chef for "Etheleen & Alma's Dream," a premium catering service in the Greater Charlotte area.
 
-Your task is to create a bespoke menu proposal based on the following client preferences for sliders: ${dishes.join(', ')}.
+Your task is to create a formal "Catering Proposal Template" based on a client's specific experience curation:
+- Main Proteins: ${selections.proteins.join(', ')}
+- Preparation Style: ${selections.preparation}
+- Side Dishes: ${selections.sides}
+- Bread Selection: ${selections.bread}
+- Dietary Notes/Allergies: ${selections.allergies}
 
-Pricing Structure:
-- Standard Sliders (Beef, Chicken, Pork): $25.00 per person
-- Premium Sliders (Steak, Seafood): $30.00 per person
+The proposal MUST follow this structured format:
 
-The Package structure:
-1. Two (2) types of Slider options (Craft these based on the client's favorites: ${dishes.join(', ')}).
-2. Recommendation for Two (2) complementary side items based on the slider choices.
-3. Service Type: Drop-off only (Pick-up-and-go).
+1. HEADER:
+   Etheleen & Alma's Dream, LLC
+   Catering Proposal
 
-Format the menu elegantly with detailed descriptions for the sliders. 
-Include a "Pricing Summary" section clearly stating the cost per person based on the ingredient types.
-Include terms:
-- 50% non-refundable deposit required upon contract signing.
-- Final headcount due 7 days prior to service.
+2. CLIENT INFO (Use blanks):
+   Submitted To: ____________________
+   Event Date: ____________________
+   Location: ____________________
 
-Make the proposal feel luxurious and bespoke. Do NOT mention specific churches or client names.`;
+3. SCOPE OF WORK:
+   Etheleen & Alma's Dream, LLC proposes to provide bespoke "Pick-up-and-go" catered meals. 
+   Includes: ${selections.proteins.length} types of custom sliders, 2 sides, and bread service.
+
+4. MENU OVERVIEW:
+   - Sliders: (Provide detailed, mouth-watering descriptions of ${selections.proteins.join(', ')} prepared in "${selections.preparation}" style)
+   - Sides: ${selections.sides}
+   - Bread: ${selections.bread}
+   - Special Instructions: ${selections.allergies}
+
+5. PAYMENT TERMS:
+   - A non-refundable deposit of 50% is due upon contract signing.
+   - The remaining balance is due upon completion of services.
+   - Final headcount due 7 days prior to event.
+
+6. SIGNATURE BLOCK (Use blanks):
+   Authorized Signature (Client): ____________________ Date: ____________
+   Authorized Signature (Etheleen & Alma's Dream, LLC): ____________________ Date: ____________
+
+Make the tone luxurious, professional, and bespoke. Do NOT mention specific names like "Elevation Church".`;
 
     const result = await geminiModel.generateContent(prompt);
     const response = result.response;
