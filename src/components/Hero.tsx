@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ChevronRight, Award } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const Hero = () => {
     return (
@@ -63,7 +63,7 @@ const Hero = () => {
                     </div>
 
                     {/* Lead Generation Quote Section */}
-                    <div className="pt-8 w-full max-w-lg border-t border-primary/10">
+                    <div id="quote" className="pt-8 w-full max-w-lg border-t border-primary/10">
                         <p className="text-xs uppercase tracking-[0.2em] text-foreground/50 mb-4 text-center lg:text-left">
                             Get Your Free Custom Quote
                         </p>

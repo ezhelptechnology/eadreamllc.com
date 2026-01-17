@@ -44,7 +44,7 @@ const Testimonials = () => {
                         Loved by <span className="text-gradient">Clients</span>
                     </h2>
                     <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-                        Don't just take our word for it. Here's what our clients say about their experiences.
+                        Don&apos;t just take our word for it. Here&apos;s what our clients say about their experiences.
                     </p>
                 </motion.div>
 
@@ -69,7 +69,7 @@ const Testimonials = () => {
                             <div className="relative mb-6">
                                 <Quote size={40} className="text-accent/20 absolute -top-2 -left-2" />
                                 <p className="text-foreground/80 leading-relaxed pl-8 italic">
-                                    "{testimonial.text}"
+                                    &quot;{testimonial.text}&quot;
                                 </p>
                             </div>
 

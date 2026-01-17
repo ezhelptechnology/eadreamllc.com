@@ -200,7 +200,7 @@ const DishSelector = () => {
                         </button>
                     </div>
                     <p className="text-[10px] text-foreground/40 mt-3 text-center px-4 italic">
-                        "Bespoke catering for your most precious moments."
+                        &quot;Bespoke catering for your most precious moments.&quot;
                     </p>
                 </div>
             )}

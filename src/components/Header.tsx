@@ -48,7 +48,7 @@ const Header = () => {
           </div>
           <div className="hidden lg:flex flex-col">
             <span className="text-xl font-bold font-serif leading-none tracking-tight text-primary">
-              Etheleen & Alma's
+              Etheleen &amp; Alma&apos;s
             </span>
             <span className="text-sm font-medium tracking-[0.2em] text-accent uppercase">
               Dream, LLC
@@ -75,10 +75,10 @@ const Header = () => {
           <Link href="/admin" className="hidden lg:block text-xs font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mr-2">
             Admin
           </Link>
-          <button className="hidden md:flex btn-primary items-center gap-2 text-xs font-bold px-6 py-3">
+          <Link href="#quote" className="hidden md:flex btn-primary items-center gap-2 text-xs font-bold px-6 py-3">
             <Mail size={14} />
-            Order Service
-          </button>
+            Get a Quote
+          </Link>
 
           {/* Mobile Toggle */}
           <button
