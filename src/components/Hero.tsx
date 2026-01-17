@@ -62,17 +62,27 @@ const Hero = () => {
                         </button>
                     </div>
 
-                    {/* Stats/Trust - Simplified and Elegant */}
-                    <div className="pt-8 flex items-center gap-12 border-t border-primary/10 w-full lg:w-auto justify-center lg:justify-start">
-                        <div className="text-center lg:text-left">
-                            <div className="text-4xl font-serif text-primary">500<span className="text-accent text-2xl">+</span></div>
-                            <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 mt-1">Events Hosted</div>
-                        </div>
-                        <div className="w-px h-12 bg-primary/10"></div>
-                        <div className="text-center lg:text-left">
-                            <div className="text-4xl font-serif text-primary">15<span className="text-accent text-2xl">+</span></div>
-                            <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 mt-1">Years Experience</div>
-                        </div>
+                    {/* Lead Generation Quote Section */}
+                    <div className="pt-8 w-full max-w-lg border-t border-primary/10">
+                        <p className="text-xs uppercase tracking-[0.2em] text-foreground/50 mb-4 text-center lg:text-left">
+                            Get Your Free Custom Quote
+                        </p>
+                        <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="flex-1 px-5 py-4 bg-white/80 backdrop-blur-sm border border-primary/20 rounded-sm text-sm placeholder:text-foreground/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                            />
+                            <button
+                                type="submit"
+                                className="btn-primary px-8 py-4 text-xs tracking-[0.15em] whitespace-nowrap hover:shadow-lg hover:shadow-primary/20 transition-all"
+                            >
+                                Get Quote
+                            </button>
+                        </form>
+                        <p className="text-[10px] text-foreground/40 mt-3 text-center lg:text-left">
+                            ✨ Free consultation • No commitment required
+                        </p>
                     </div>
                 </motion.div>
 
