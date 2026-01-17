@@ -15,7 +15,7 @@ const DishSelector = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: "Welcome to Etheleen & Alma's Dream. I'm your culinary guide. To help us craft your perfect menu, could you share your top 3 favorite dishes or flavor profiles?",
+            text: "Welcome to Etheleen & Alma's Dream. I'm your culinary guide. We specialize in premium 'Pick-up-and-go' catering starting at just $9.00 per person. To help us customize our standard Slider & Sides package for you, could you share 3 dishes or flavor profiles you'd love to see as sliders?",
             sender: 'bot',
             timestamp: new Date(),
         }
