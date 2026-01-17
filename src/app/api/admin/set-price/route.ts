@@ -3,28 +3,28 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
     try {
-        const { menuId, finalPrice } = await req.json();
+        const { proposalId, finalPrice } = await req.json();
 
-        if (!menuId || finalPrice === undefined) {
-            return NextResponse.json({ error: 'Menu ID and final price are required' }, { status: 400 });
+        if (!proposalId || finalPrice === undefined) {
+            return NextResponse.json({ error: 'Proposal ID and final price are required' }, { status: 400 });
         }
 
-        // Update menu with final price
-        const updatedMenu = await prisma.menu.update({
-            where: { id: menuId },
-            data: { finalPrice: parseFloat(finalPrice) }
+        // Update proposal with final price
+        const updatedProposal = await prisma.proposal.update({
+            where: { id: proposalId },
+            data: { estimatedCost: parseFloat(finalPrice), status: 'APPROVED' }
         });
 
         // Update request status
         await prisma.cateringRequest.update({
-            where: { id: updatedMenu.requestId },
-            data: { status: 'REVIEWED' }
+            where: { id: updatedProposal.requestId },
+            data: { status: 'APPROVED' }
         });
 
         return NextResponse.json({
             success: true,
             message: 'Final price set successfully',
-            menu: updatedMenu
+            proposal: updatedProposal
         });
 
     } catch (error: any) {

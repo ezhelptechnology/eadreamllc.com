@@ -13,45 +13,49 @@ export async function POST(req: Request) {
         // Get the catering request
         const cateringRequest = await prisma.cateringRequest.findUnique({
             where: { id: requestId },
-            include: { generatedMenu: true }
+            include: { proposals: { orderBy: { version: 'desc' }, take: 1 } }
         });
 
         if (!cateringRequest) {
             return NextResponse.json({ error: 'Request not found' }, { status: 404 });
         }
 
-        // Parse favorite dishes
-        const dishes = JSON.parse(cateringRequest.favoriteDishes);
+        // Parse proteins
+        const proteins = JSON.parse(cateringRequest.proteins);
 
-        // Generate menu using Gemini AI
-        const menuContent = await generateMenuFromDishes(dishes);
+        // Generate menu using Gemini AI with the new selections format
+        const menuContent = await generateMenuFromDishes({
+            proteins,
+            preparation: cateringRequest.preparation || '',
+            sides: cateringRequest.sides || '',
+            bread: cateringRequest.bread || '',
+            allergies: cateringRequest.allergies || '',
+        });
 
-        // Estimate cost
-        const estimatedCost = await estimateCateringCost(menuContent, guestCount);
+        // Estimate cost based on proteins
+        const hasSteak = proteins.some((p: string) => p.toLowerCase().includes('steak'));
+        const hasSeafood = proteins.some((p: string) => p.toLowerCase().includes('seafood') || p.toLowerCase().includes('fish'));
+        const rate = (hasSteak || hasSeafood) ? 30 : 25;
+        const estimatedCost = rate * guestCount;
 
-        // Save or update menu
-        if (cateringRequest.generatedMenu) {
-            await prisma.menu.update({
-                where: { id: cateringRequest.generatedMenu.id },
-                data: {
-                    content: menuContent,
-                    estimatedCost: estimatedCost,
-                }
-            });
-        } else {
-            await prisma.menu.create({
-                data: {
-                    content: menuContent,
-                    estimatedCost: estimatedCost,
-                    requestId: requestId,
-                }
-            });
-        }
+        // Get latest version number
+        const latestVersion = cateringRequest.proposals[0]?.version || 0;
+
+        // Create new proposal
+        await prisma.proposal.create({
+            data: {
+                content: menuContent,
+                estimatedCost: estimatedCost,
+                version: latestVersion + 1,
+                status: 'DRAFT',
+                requestId: requestId,
+            }
+        });
 
         // Update request status
         await prisma.cateringRequest.update({
             where: { id: requestId },
-            data: { status: 'GENERATED' }
+            data: { status: 'PROPOSAL_SENT' }
         });
 
         return NextResponse.json({

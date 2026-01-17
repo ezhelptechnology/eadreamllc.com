@@ -59,17 +59,44 @@ model CateringRequest {
   id              String   @id @default(cuid())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  favoriteDishes  String   // JSON string or comma-separated
-  status          String   @default("PENDING") // PENDING, GENERATED, REVIEWED, SENT
-  generatedMenu   Menu?
+  
+  // Customer Info
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  eventDate       String?
+  eventLocation   String?
+  headcount       Int      @default(50)
+  
+  // Selections from Bot
+  proteins        String   // JSON array as string
+  preparation     String?
+  sides           String?
+  bread           String?
+  allergies       String?
+  
+  // Status
+  status          String   @default("PENDING") // PENDING, PROPOSAL_SENT, APPROVED, COMPLETED
+  
+  // Relations
+  proposals       Proposal[]
 }
 
-model Menu {
-  id                String          @id @default(cuid())
-  createdAt         DateTime        @default(now())
-  content           String          // The actual menu text/markdown
-  estimatedCost     Float
-  finalPrice        Float?
-  requestId         String          @unique
-  request           CateringRequest @relation(fields: [requestId], references: [id])
+model Proposal {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Content
+  content         String   @db.Text // The actual proposal markdown
+  estimatedCost   Float
+  version         Int      @default(1)
+  
+  // Status
+  status          String   @default("DRAFT") // DRAFT, SENT, APPROVED, REJECTED
+  sentAt          DateTime?
+  
+  // Relation
+  requestId       String
+  request         CateringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 }

@@ -29,7 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     },
                 });
 
-                if (!user) {
+                if (!user || !user.password) {
                     return null;
                 }
 
