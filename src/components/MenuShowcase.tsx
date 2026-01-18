@@ -11,9 +11,9 @@ const MenuShowcase = () => {
         price: 25,
         description: "Timeless flavors, expertly prepared",
         proteins: [
-            { name: "Herb-Roasted Chicken", image: "/food-appetizers.jpg" },
-            { name: "Braised Pork Tenderloin", image: "/food-salmon-main.jpg" },
-            { name: "Grilled Beef Medallions", image: "/food-appetizers.jpg" }
+            { name: "Herb-Roasted Chicken", image: "/food-chicken.jpg" },
+            { name: "Braised Pork Tenderloin", image: "/food-ribs.jpg" },
+            { name: "Grilled Beef Medallions", image: "/food-ribs2.jpg" }
         ]
     };
 
@@ -22,9 +22,9 @@ const MenuShowcase = () => {
         price: 30,
         description: "Elevated cuisine for discerning palates",
         proteins: [
-            { name: "Pan-Seared Filet Mignon", image: "/food-salmon-main.jpg" },
-            { name: "Chilean Sea Bass", image: "/food-appetizers.jpg" },
-            { name: "Lobster Tail", image: "/food-salmon-main.jpg" }
+            { name: "Pan-Seared Filet Mignon", image: "/food-steak.jpg" },
+            { name: "Chilean Sea Bass", image: "/food-chicken.jpg" },
+            { name: "Lobster Tail", image: "/food-ribs.jpg" }
         ]
     };
 

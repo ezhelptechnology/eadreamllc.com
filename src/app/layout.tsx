@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import FloatingExperienceBot from "@/components/FloatingExperienceBot";
+import ClientOptimizations from "@/components/ClientOptimizations";
 
 export const metadata: Metadata = {
   title: "Etheleen & Alma's Dream | Premier Catering Services",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ClientOptimizations />
         <Header />
         <main>
           {children}

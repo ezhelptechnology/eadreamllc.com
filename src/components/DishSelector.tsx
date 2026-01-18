@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Utensils, CheckCircle2, RefreshCcw, User, Mail, Phone, CalendarDays, Users } from 'lucide-react';
 
@@ -48,7 +48,7 @@ const DishSelector = () => {
         }
     }, [messages]);
 
-    const addBotMessage = (text: string) => {
+    const addBotMessage = useCallback((text: string) => {
         const botMessage: Message = {
             id: (Date.now() + 1).toString(),
             text,
@@ -56,9 +56,9 @@ const DishSelector = () => {
             timestamp: new Date(),
         };
         setMessages(prev => [...prev, botMessage]);
-    };
+    }, []);
 
-    const handleSend = async () => {
+    const handleSend = useCallback(async () => {
         if (!input.trim() || isSubmitting || isDone) return;
 
         const userMessage: Message = {
@@ -73,6 +73,7 @@ const DishSelector = () => {
         setInput('');
         setIsSubmitting(true);
 
+        // Reduced timeout to 250ms for faster interaction
         setTimeout(async () => {
             let botResponse = '';
 
@@ -86,56 +87,57 @@ const DishSelector = () => {
                 case 'email':
                     setCustomerInfo(prev => ({ ...prev, email: currentInput }));
                     setStep('phone');
-                    botResponse = `Got it! And a phone number in case we need to reach you? (You can type "skip" if you prefer not to share)`;
+                    botResponse = `Got it! And a phone number? (Type "skip" to skip)`;
                     break;
 
                 case 'phone':
                     const phone = currentInput.toLowerCase() === 'skip' ? '' : currentInput;
                     setCustomerInfo(prev => ({ ...prev, phone }));
                     setStep('eventDate');
-                    botResponse = `When is your event? (e.g., "March 15, 2026" or type "TBD" if not decided)`;
+                    botResponse = `When is your event? (e.g., "March 15, 2026" or "TBD")`;
                     break;
 
                 case 'eventDate':
                     setCustomerInfo(prev => ({ ...prev, eventDate: currentInput }));
                     setStep('headcount');
-                    botResponse = `Excellent! Approximately how many guests are you expecting?`;
+                    botResponse = `Excellent! How many guests?`;
                     break;
 
                 case 'headcount':
                     const headcount = parseInt(currentInput) || 50;
                     setCustomerInfo(prev => ({ ...prev, headcount }));
                     setStep('sliders');
-                    botResponse = `Perfect, planning for ${headcount} guests! Now let's design your menu. 🍽️\n\nOur premium slider packages range from $25-$30 per person. What's your first protein choice for sliders? (e.g., Beef, Chicken, Pork, Steak, or Seafood)`;
+                    botResponse = `Perfect! Planning for ${headcount} guests. 🍽️\n\nOur packages: $25/person (Beef, Chicken, Pork) or $30/person (Steak, Seafood).\n\nWhat's your FIRST protein? (Choose ONE only)`;
                     break;
 
                 case 'sliders':
                     const newProteins = [...selections.proteins, currentInput];
                     setSelections(prev => ({ ...prev, proteins: newProteins }));
                     if (newProteins.length < 3) {
-                        botResponse = `Great choice! What's your ${newProteins.length === 1 ? 'second' : 'third'} protein selection?`;
+                        const ordinal = newProteins.length === 1 ? 'SECOND' : 'THIRD';
+                        botResponse = `Great! What's your ${ordinal} protein? (ONE choice only)`;
                     } else {
                         setStep('preparation');
-                        botResponse = `Excellent selections: ${newProteins.join(', ')}! How would you like these prepared? (e.g., Grilled with Lemon Cream, BBQ Glazed, Herb Crusted)`;
+                        botResponse = `Excellent: ${newProteins.join(', ')}!\n\nHow should we prepare these? (e.g., Grilled, BBQ, Herb-Crusted)`;
                     }
                     break;
 
                 case 'preparation':
                     setSelections(prev => ({ ...prev, preparation: currentInput }));
                     setStep('sides');
-                    botResponse = `Delicious! Now choose 2 sides to complement your sliders: Green Beans, Brussels Sprouts, Rice, Lentils, Mac & Cheese, or Cole Slaw?`;
+                    botResponse = `Delicious! Choose 2 sides:\nGreen Beans, Brussels Sprouts, Rice, Lentils, Mac & Cheese, Cole Slaw`;
                     break;
 
                 case 'sides':
                     setSelections(prev => ({ ...prev, sides: currentInput }));
                     setStep('bread');
-                    botResponse = `Perfect pairings! For your bread service, would you prefer Rolls, Biscuits, or Toast?`;
+                    botResponse = `Perfect! Bread service: Rolls, Biscuits, or Toast?`;
                     break;
 
                 case 'bread':
                     setSelections(prev => ({ ...prev, bread: currentInput }));
                     setStep('allergies');
-                    botResponse = `Almost done! Any food allergies or dietary restrictions we should know about? (Type "none" if not applicable)`;
+                    botResponse = `Almost done! Any allergies or dietary restrictions? (Type "none" if not)`;
                     break;
 
                 case 'allergies':
@@ -143,7 +145,6 @@ const DishSelector = () => {
                     setSelections(prev => ({ ...prev, allergies }));
                     setStep('submitting');
 
-                    // Submit the request
                     try {
                         const response = await fetch('/api/catering/submit', {
                             method: 'POST',
@@ -163,13 +164,13 @@ const DishSelector = () => {
                         });
 
                         if (response.ok) {
-                            botResponse = `🎉 Your custom experience is complete, ${customerInfo.name}!\n\nI've sent your personalized catering proposal to ${customerInfo.email}. Our team will also reach out to schedule your complimentary tasting experience.\n\nThank you for choosing Etheleen & Alma's Dream!`;
+                            botResponse = `🎉 Complete, ${customerInfo.name}!\n\nYour proposal has been sent to ${customerInfo.email}. We'll reach out to schedule your tasting!\n\nThank you for choosing Etheleen & Alma's Dream!`;
                             setIsDone(true);
                         } else {
-                            botResponse = `There was an issue submitting your request. Please try again or contact us directly at yourmeal@eadreamllc.com`;
+                            botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
                         }
                     } catch (error) {
-                        botResponse = `There was an issue submitting your request. Please try again or contact us directly at yourmeal@eadreamllc.com`;
+                        botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
                     }
                     setStep('done');
                     break;
@@ -177,13 +178,13 @@ const DishSelector = () => {
 
             addBotMessage(botResponse);
             setIsSubmitting(false);
-        }, 600);
-    };
+        }, 250); // Optimized from 600ms to 250ms
+    }, [input, isSubmitting, isDone, step, customerInfo, selections, addBotMessage]);
 
-    const resetChat = () => {
+    const resetChat = useCallback(() => {
         setMessages([{
             id: '1',
-            text: "Let's start fresh! What's your name?",
+            text: "Let's create a new experience. What's your name?",
             sender: 'bot',
             timestamp: new Date(),
         }]);
@@ -191,21 +192,21 @@ const DishSelector = () => {
         setSelections({ proteins: [], preparation: '', sides: '', bread: '', allergies: '' });
         setStep('name');
         setIsDone(false);
-    };
+    }, []);
 
     const getPlaceholder = () => {
         switch (step) {
-            case 'name': return "Enter your name...";
+            case 'name': return "Your name...";
             case 'email': return "your@email.com";
             case 'phone': return "555-123-4567 or skip";
             case 'eventDate': return "March 15, 2026";
-            case 'headcount': return "e.g. 50";
-            case 'sliders': return "e.g. Beef, Chicken, Steak";
-            case 'preparation': return "e.g. Grilled with herbs";
-            case 'sides': return "e.g. Mac & Cheese, Green Beans";
+            case 'headcount': return "50";
+            case 'sliders': return "ONE protein only (e.g. Beef)";
+            case 'preparation': return "e.g. Grilled";
+            case 'sides': return "e.g. Rice, Green Beans";
             case 'bread': return "Rolls, Biscuits, or Toast";
-            case 'allergies': return "Type 'none' or list allergies";
-            default: return "Type your response...";
+            case 'allergies': return "none or list allergies";
+            default: return "Type here...";
         }
     };
 
@@ -257,6 +258,7 @@ const DishSelector = () => {
                             key={msg.id}
                             initial={{ opacity: 0, scale: 0.95, y: 15 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.2 }}
                             className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                             <div
@@ -296,7 +298,7 @@ const DishSelector = () => {
                         </div>
                         <div>
                             <p className="font-serif font-bold text-2xl text-primary">Proposal Sent!</p>
-                            <p className="text-sm text-foreground/60 mt-2 max-w-[280px] mx-auto">Check your email at {customerInfo.email}</p>
+                            <p className="text-sm text-foreground/60 mt-2 max-w-[280px] mx-auto">Check {customerInfo.email}</p>
                         </div>
                     </motion.div>
                 )}
@@ -310,14 +312,20 @@ const DishSelector = () => {
                             type={step === 'email' ? 'email' : step === 'headcount' ? 'number' : 'text'}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleSend();
+                                }
+                            }}
                             placeholder={getPlaceholder()}
-                            className="w-full py-5 pl-7 pr-16 rounded-full bg-background border border-primary/10 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/5 transition-all text-[15px] font-medium placeholder:text-foreground/30 shadow-inner"
+                            disabled={isSubmitting}
+                            className="w-full py-5 pl-7 pr-16 rounded-full bg-background border border-primary/10 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/5 transition-all text-[15px] font-medium placeholder:text-foreground/30 shadow-inner disabled:opacity-50"
                         />
                         <button
                             onClick={handleSend}
                             disabled={!input.trim() || isSubmitting}
-                            className="absolute right-2.5 p-3.5 bg-primary text-white rounded-full hover:bg-accent disabled:opacity-50 disabled:hover:bg-primary transition-all shadow-xl hover:shadow-accent/30 active:scale-95"
+                            className="absolute right-2.5 p-3.5 bg-primary text-white rounded-full hover:bg-accent disabled:opacity-50 disabled:hover:bg-primary transition-all shadow-xl hover:shadow-accent/30 active:scale-95 disabled:cursor-not-allowed"
                         >
                             <Send size={20} />
                         </button>
