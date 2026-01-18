@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Create the catering request
+        console.log('Creating catering request in DB...');
         const cateringRequest = await prisma.cateringRequest.create({
             data: {
                 customerName,
@@ -41,8 +42,10 @@ export async function POST(request: NextRequest) {
                 status: 'PENDING',
             },
         });
+        console.log('Catering request created:', cateringRequest.id);
 
         // Generate the proposal using Gemini
+        console.log('Generating proposal with Gemini...');
         const proposalContent = await generateMenuFromDishes({
             proteins,
             preparation: preparation || '',
@@ -50,6 +53,7 @@ export async function POST(request: NextRequest) {
             bread: bread || '',
             allergies: allergies || '',
         });
+        console.log('Proposal content generated.');
 
         // Calculate estimated cost
         const hasSteak = proteins.some((p: string) => p.toLowerCase().includes('steak'));
@@ -58,6 +62,7 @@ export async function POST(request: NextRequest) {
         const estimatedCost = rate * (headcount || 50);
 
         // Create the proposal
+        console.log('Creating proposal in DB...');
         const proposal = await prisma.proposal.create({
             data: {
                 content: proposalContent,
@@ -89,9 +94,13 @@ export async function POST(request: NextRequest) {
             message: 'Your custom proposal has been sent to your email!'
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating catering request:', error);
-        return NextResponse.json({ error: 'Failed to create request' }, { status: 500 });
+        return NextResponse.json({
+            error: 'Failed to create request',
+            details: error.message || 'Unknown error',
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 });
     }
 }
 
