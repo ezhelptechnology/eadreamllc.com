@@ -54,10 +54,24 @@ const Hero = () => {
 
                     {/* CTAs */}
                     <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto pt-4">
-                        <button className="btn-primary flex items-center justify-center gap-3 shadow-2xl hover:shadow-primary/20 tracking-[0.2em] text-sm py-5 px-10">
-                            Start Your Journey
+                        <button
+                            onClick={() => {
+                                const bot = document.querySelector('[data-floating-bot]') as HTMLButtonElement;
+                                if (bot) bot.click();
+                            }}
+                            className="btn-primary flex items-center justify-center gap-3 shadow-2xl hover:shadow-primary/20 tracking-[0.2em] text-sm py-5 px-10"
+                        >
+                            Order - Start Your Journey
                         </button>
-                        <button className="text-sm px-10 py-5 border border-primary/20 font-sans font-medium uppercase tracking-[0.2em] hover:bg-primary/5 hover:border-primary text-primary transition-all duration-500">
+                        <button
+                            onClick={() => {
+                                const menuSection = document.getElementById('menu');
+                                if (menuSection) {
+                                    menuSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                            }}
+                            className="text-sm px-10 py-5 border border-primary/20 font-sans font-medium uppercase tracking-[0.2em] hover:bg-primary/5 hover:border-primary text-primary transition-all duration-500 text-center"
+                        >
                             View Our Menus
                         </button>
                     </div>

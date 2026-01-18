@@ -6,15 +6,26 @@ import { Sparkles, ChefHat } from 'lucide-react';
 import Image from 'next/image';
 
 const MenuShowcase = () => {
+    const scrollToMenuItems = () => {
+        const menuSection = document.getElementById('menu-items');
+        if (menuSection) {
+            menuSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     const classicTier = {
         title: "Classic Collection",
         price: 25,
         description: "Timeless flavors, expertly prepared",
         proteins: [
             { name: "Herb-Roasted Chicken", image: "/food-chicken.jpg" },
-            { name: "Braised Pork Tenderloin", image: "/food-ribs.jpg" },
-            { name: "Grilled Beef Medallions", image: "/food-ribs2.jpg" }
-        ]
+            { name: "Slow-Braised Beef", image: "/food-ribs.jpg" },
+            { name: "Grilled Pork Tenderloin", image: "/food-ribs2.jpg" },
+            { name: "Roasted Lamb Shoulder", image: "/food-steak.jpg" }
+        ],
+        sauces: ["Lemon Cream", "Herb Butter", "Red Wine Reduction"],
+        sides: ["Green Beans", "Brussels Sprouts", "Rice Pilaf", "Lentils"],
+        breads: ["Rolls", "Biscuits", "Toast"]
     };
 
     const premiumTier = {
@@ -23,9 +34,13 @@ const MenuShowcase = () => {
         description: "Elevated cuisine for discerning palates",
         proteins: [
             { name: "Pan-Seared Filet Mignon", image: "/food-steak.jpg" },
+            { name: "Prime Ribeye Steak", image: "/food-ribs2.jpg" },
             { name: "Chilean Sea Bass", image: "/food-chicken.jpg" },
-            { name: "Lobster Tail", image: "/food-ribs.jpg" }
-        ]
+            { name: "Herb-Crusted Lamb Rack", image: "/food-ribs.jpg" }
+        ],
+        sauces: ["Béarnaise", "Truffle Butter", "Champagne Cream"],
+        sides: ["Roasted Brussels", "Wild Rice", "French Lentils", "Haricots Verts"],
+        breads: ["Artisan Rolls", "Buttermilk Biscuits", "Garlic Toast"]
     };
 
     return (
@@ -44,10 +59,13 @@ const MenuShowcase = () => {
                     viewport={{ once: true }}
                     className="text-center mb-20"
                 >
-                    <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent/10 border border-accent/20 mb-6">
-                        <Sparkles size={18} className="text-accent" />
+                    <button
+                        onClick={scrollToMenuItems}
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent/10 border border-accent/20 mb-6 hover:bg-accent/20 hover:border-accent/40 transition-all duration-300 cursor-pointer group"
+                    >
+                        <Sparkles size={18} className="text-accent group-hover:scale-110 transition-transform" />
                         <span className="text-accent font-bold uppercase tracking-widest text-sm">Curated Experiences</span>
-                    </div>
+                    </button>
                     <h2 className="text-6xl md:text-7xl font-serif text-primary mb-6 leading-tight">
                         Build Your <span className="italic text-accent font-light">Perfect Menu</span>
                     </h2>
@@ -57,7 +75,7 @@ const MenuShowcase = () => {
                 </motion.div>
 
                 {/* Tier Cards */}
-                <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto mb-20">
+                <div id="menu-items" className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto mb-20 scroll-mt-8">
                     {/* Classic Tier */}
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}
@@ -95,7 +113,29 @@ const MenuShowcase = () => {
                                 ))}
                             </div>
 
-                            <div className="pt-6 border-t border-primary/10">
+                            {/* Additional options display */}
+                            <div className="mt-6 space-y-3">
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs uppercase tracking-wider text-foreground/40">Sauces:</span>
+                                    {classicTier.sauces.map((sauce, idx) => (
+                                        <span key={idx} className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary/80">{sauce}</span>
+                                    ))}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs uppercase tracking-wider text-foreground/40">Sides:</span>
+                                    {classicTier.sides.map((side, idx) => (
+                                        <span key={idx} className="text-xs px-2 py-1 rounded-full bg-white/50 text-foreground/70">{side}</span>
+                                    ))}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs uppercase tracking-wider text-foreground/40">Breads:</span>
+                                    {classicTier.breads.map((bread, idx) => (
+                                        <span key={idx} className="text-xs px-2 py-1 rounded-full bg-white/50 text-foreground/70">{bread}</span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="pt-6 border-t border-primary/10 mt-6">
                                 <p className="text-sm text-foreground/50 text-center">
                                     Includes: Garden Salad • Main Course • Artisan Dessert
                                 </p>
@@ -112,8 +152,9 @@ const MenuShowcase = () => {
                     >
                         <div className="absolute -inset-1 bg-gradient-to-br from-accent via-primary to-accent rounded-[3rem] opacity-20 group-hover:opacity-30 blur-xl transition-opacity duration-700"></div>
                         <div className="relative glass rounded-[3rem] p-10 border-2 border-accent/30 hover:border-accent/50 transition-all duration-500 bg-gradient-to-br from-accent/5 to-transparent">
-                            <div className="absolute top-6 right-6">
-                                <div className="px-4 py-2 rounded-full bg-accent text-white text-xs font-bold uppercase tracking-widest">
+                            {/* Premium badge positioned higher above price */}
+                            <div className="absolute -top-4 right-8 z-10">
+                                <div className="px-5 py-2.5 rounded-full bg-accent text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-accent/30 animate-pulse">
                                     Premium
                                 </div>
                             </div>
@@ -146,7 +187,29 @@ const MenuShowcase = () => {
                                 ))}
                             </div>
 
-                            <div className="pt-6 border-t border-accent/20">
+                            {/* Additional options display */}
+                            <div className="mt-6 space-y-3">
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs uppercase tracking-wider text-foreground/40">Sauces:</span>
+                                    {premiumTier.sauces.map((sauce, idx) => (
+                                        <span key={idx} className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent/80">{sauce}</span>
+                                    ))}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs uppercase tracking-wider text-foreground/40">Sides:</span>
+                                    {premiumTier.sides.map((side, idx) => (
+                                        <span key={idx} className="text-xs px-2 py-1 rounded-full bg-white/50 text-foreground/70">{side}</span>
+                                    ))}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs uppercase tracking-wider text-foreground/40">Breads:</span>
+                                    {premiumTier.breads.map((bread, idx) => (
+                                        <span key={idx} className="text-xs px-2 py-1 rounded-full bg-white/50 text-foreground/70">{bread}</span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="pt-6 border-t border-accent/20 mt-6">
                                 <p className="text-sm text-foreground/50 text-center">
                                     Includes: Gourmet Salad • Premium Main • Signature Dessert
                                 </p>

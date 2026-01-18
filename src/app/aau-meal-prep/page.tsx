@@ -21,6 +21,7 @@ const AAUMealPrepPage = () => {
     ]);
     const [input, setInput] = useState('');
     const [isDone, setIsDone] = useState(false);
+    const [step, setStep] = useState<'initial' | 'done'>('initial');
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -34,15 +35,19 @@ const AAUMealPrepPage = () => {
 
         const userMsg: Message = { id: Date.now().toString(), text: input, sender: 'user' };
         setMessages(prev => [...prev, userMsg]);
+        const currentInput = input;
         setInput('');
 
         setTimeout(() => {
+            let botResponse = "Got it! Your team is on the priority list. We'll reach out to your email shortly to discuss your upcoming schedule. Let's fuel the win! 🏆";
+
             setMessages(prev => [...prev, {
                 id: (Date.now() + 1).toString(),
-                text: "Got it! Your team is on the priority list. We'll reach out to your email shortly to discuss your upcoming schedule. Let's fuel the win! 🏆",
+                text: botResponse,
                 sender: 'bot'
             }]);
             setIsDone(true);
+            setStep('done');
         }, 800);
     };
 
@@ -79,20 +84,48 @@ const AAUMealPrepPage = () => {
                             Includes breakfast, high-energy game-day snacks, and recovery meals for both days.
                         </motion.p>
 
-                        <div className="grid grid-cols-2 gap-6 mb-12">
-                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                                <h3 className="font-bold text-accent mb-2">Weekend Warrior</h3>
-                                <p className="text-sm text-white/40">Full 2-day nutrition support for the entire team.</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/30 transition-colors">
+                                <h3 className="font-bold text-accent mb-2">Weekend Warrior Package</h3>
+                                <ul className="text-sm text-white/60 space-y-2">
+                                    <li className="flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                                        Breakfast (Day 1 & 2)
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                                        High-Energy Snacks between games
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                                        Performance Recovery Meals
+                                    </li>
+                                </ul>
                             </div>
-                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/30 transition-colors flex flex-col justify-center">
                                 <h3 className="font-bold text-accent mb-2">$1,200 Flat Rate</h3>
-                                <p className="text-sm text-white/40">Transparent pricing for premium athletic fueling.</p>
+                                <p className="text-sm text-white/40 leading-relaxed">
+                                    Transparent pricing for a full weekend of elite performance nutrition for your entire team.
+                                </p>
                             </div>
                         </div>
+
+                        <motion.button
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            onClick={() => {
+                                const bot = document.getElementById('aau-bot');
+                                if (bot) bot.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="px-10 py-5 bg-accent text-black font-bold uppercase tracking-widest rounded-full hover:scale-105 transition-transform shadow-2xl shadow-accent/20"
+                        >
+                            Reserve Your Weekend
+                        </motion.button>
                     </div>
 
                     {/* Bot */}
-                    <div className="relative">
+                    <div id="aau-bot" className="relative scroll-mt-32">
                         <div className="absolute -inset-4 bg-accent/20 blur-[100px] rounded-full pointer-events-none"></div>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -121,8 +154,8 @@ const AAUMealPrepPage = () => {
                                             className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                         >
                                             <div className={`max-w-[80%] p-4 rounded-2xl text-sm ${m.sender === 'user'
-                                                    ? 'bg-accent text-black font-bold rounded-tr-none'
-                                                    : 'bg-white/10 text-white rounded-tl-none border border-white/5'
+                                                ? 'bg-accent text-black font-bold rounded-tr-none'
+                                                : 'bg-white/10 text-white rounded-tl-none border border-white/5'
                                                 }`}>
                                                 {m.text}
                                             </div>

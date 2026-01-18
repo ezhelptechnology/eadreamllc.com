@@ -11,7 +11,7 @@ interface Message {
     timestamp: Date;
 }
 
-type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'done';
+type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'scheduling' | 'done';
 
 const DishSelector = () => {
     const [messages, setMessages] = useState<Message[]>([
@@ -164,15 +164,22 @@ const DishSelector = () => {
                         });
 
                         if (response.ok) {
-                            botResponse = `🎉 Complete, ${customerInfo.name}!\n\nYour proposal has been sent to ${customerInfo.email}. We'll reach out to schedule your tasting!\n\nThank you for choosing Etheleen & Alma's Dream!`;
-                            setIsDone(true);
+                            botResponse = `🎉 Proposal Sent, ${customerInfo.name}!\n\nYour preliminary proposal is in your inbox at ${customerInfo.email}.\n\nNext Step: We'd love to host you for a tasting experience! What is your preferred date and time for a tasting? (e.g., Next Friday at 2pm)`;
+                            setStep('scheduling');
                         } else {
                             botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
+                            setStep('done');
                         }
                     } catch (error) {
                         botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
+                        setStep('done');
                     }
+                    break;
+
+                case 'scheduling':
+                    botResponse = `Thank you for requesting ${currentInput}! 📅\n\n[Live Calendar Sync] Our Agent Bot 2 has updated the admin calendar. Admin will review the schedule and reach back out to you shortly to confirm if this works or if we need to suggest an alternative time. We look forward to seeing you!\n\nIs there anything else I can help you with?`;
                     setStep('done');
+                    setIsDone(true);
                     break;
             }
 
@@ -206,6 +213,7 @@ const DishSelector = () => {
             case 'sides': return "e.g. Rice, Green Beans";
             case 'bread': return "Rolls, Biscuits, or Toast";
             case 'allergies': return "none or list allergies";
+            case 'scheduling': return "Preferred date & time...";
             default: return "Type here...";
         }
     };
@@ -234,7 +242,8 @@ const DishSelector = () => {
                         <p className="text-[11px] font-medium opacity-80 uppercase tracking-widest text-accent">
                             {step === 'name' || step === 'email' || step === 'phone' || step === 'eventDate' || step === 'headcount'
                                 ? 'Collecting Info'
-                                : step === 'done' ? 'Complete' : 'Menu Design'}
+                                : step === 'scheduling' ? 'Scheduling Tasting'
+                                    : step === 'done' ? 'Complete' : 'Menu Design'}
                         </p>
                     </div>
                 </div>
