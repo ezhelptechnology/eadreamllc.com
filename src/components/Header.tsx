@@ -76,8 +76,10 @@ const Header = () => {
           <Link href="/admin" className="hidden lg:block text-xs font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mr-2">
             Admin
           </Link>
-          <Link href="#quote" className="hidden md:flex btn-primary items-center gap-2 text-xs font-bold px-6 py-3">
-            <Mail size={14} />
+          <Link
+            href="#quote"
+            className="hidden md:flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-accent text-white rounded-full text-xs font-bold uppercase tracking-widest hover:shadow-2xl hover:shadow-accent/30 hover:scale-105 transition-all duration-300"
+          >
             Get a Quote
           </Link>
 

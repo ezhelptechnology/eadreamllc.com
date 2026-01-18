@@ -35,6 +35,7 @@ const FloatingExperienceBot = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
+                data-floating-bot
                 className="bg-primary hover:bg-accent text-white p-4 rounded-full shadow-2xl flex items-center gap-3 transition-colors group"
             >
                 <div className="relative">
@@ -43,7 +44,7 @@ const FloatingExperienceBot = () => {
                 </div>
                 {!isOpen && (
                     <span className="font-bold text-sm tracking-widest uppercase pr-2">
-                        Create My Experience
+                        Build My Menu
                     </span>
                 )}
             </motion.button>
