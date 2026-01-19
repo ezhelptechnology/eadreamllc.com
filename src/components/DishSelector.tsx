@@ -177,9 +177,18 @@ const DishSelector = () => {
                     break;
 
                 case 'scheduling':
-                    botResponse = `Thank you for requesting ${currentInput}! 📅\n\n[Live Calendar Sync] Our Agent Bot 2 has updated the admin calendar. Admin will review the schedule and reach back out to you shortly to confirm if this works or if we need to suggest an alternative time. We look forward to seeing you!\n\nIs there anything else I can help you with?`;
+                    botResponse = `Thank you for requesting ${currentInput}! 📅\n\n[Live Calendar Sync] Our Agent Bot 2 has updated the admin calendar. Admin will review the schedule and reach back out to you shortly to confirm if this works or if we need to suggest an alternative time. We look forward to seeing you!\n\nIs there anything else I can help you with? (Type "no" to finish)`;
                     setStep('done');
-                    setIsDone(true);
+                    break;
+
+                case 'done':
+                    const doneInput = currentInput.toLowerCase();
+                    if (doneInput === 'no' || doneInput === 'nope' || doneInput === 'that\'s all' || doneInput === 'nothing' || doneInput === 'all good' || doneInput === 'i\'m good') {
+                        botResponse = `It was a pleasure assisting you today! 🌟\n\nYour tasting has been requested and your proposal has been sent. Our team will reach out shortly to confirm everything.\n\nThank you for choosing Etheleen & Alma's Dream. We can't wait to create something extraordinary for you!`;
+                        setIsDone(true);
+                    } else {
+                        botResponse = `I appreciate you reaching out! For any additional questions or special requests, please email us at yourmeal@eadreamllc.com or call us directly. Our team will be happy to assist you.\n\nIs there anything else? (Type "no" to finish)`;
+                    }
                     break;
             }
 
@@ -214,6 +223,7 @@ const DishSelector = () => {
             case 'bread': return "Rolls, Biscuits, or Toast";
             case 'allergies': return "none or list allergies";
             case 'scheduling': return "Preferred date & time...";
+            case 'done': return "Type 'no' to finish or ask a question...";
             default: return "Type here...";
         }
     };
