@@ -152,24 +152,69 @@ const Services = () => {
                     ))}
                 </div>
 
+                {/* How It Works Section */}
+                <div className="mt-32 pt-20 border-t border-primary/10">
+                    <div className="text-center mb-16">
+                        <h3 className="text-4xl font-serif text-primary mb-4">How to Get Started</h3>
+                        <p className="text-foreground/60 max-w-xl mx-auto">
+                            Getting your custom catering quote has never been easier. Follow our simple AI-guided process to build your dream menu in minutes.
+                        </p>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="max-w-5xl mx-auto relative group"
+                    >
+                        {/* Decorative Background Glow for Image */}
+                        <div className="absolute inset-0 bg-accent/5 blur-[80px] rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+
+                        <div className="relative rounded-[3rem] overflow-hidden border border-primary/10 bg-white/50 backdrop-blur-md shadow-2xl">
+                            <img
+                                src="/how-it-works.png"
+                                alt="How to build your menu using our chatbot"
+                                className="w-full h-auto"
+                            />
+                        </div>
+
+                        {/* Overlay steps text (optional but good for accessibility/clarity) */}
+                        <div className="grid md:grid-cols-3 gap-8 mt-12 text-center">
+                            <div>
+                                <h4 className="font-bold text-primary uppercase tracking-widest text-sm mb-2">1. Start a Chat</h4>
+                                <p className="text-xs text-foreground/50 px-4">Click the &quot;Build My Menu&quot; button in the corner to begin your journey.</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-primary uppercase tracking-widest text-sm mb-2">2. Customize Menu</h4>
+                                <p className="text-xs text-foreground/50 px-4">Pick your favorite proteins, sides, and share your event details.</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-primary uppercase tracking-widest text-sm mb-2">3. Receive Quote</h4>
+                                <p className="text-xs text-foreground/50 px-4">Our AI instantly creates your proposal and sends it to our team for review.</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
                 {/* Bottom CTA */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
-                    className="text-center mt-16"
+                    className="text-center mt-24"
                 >
-                    <p className="text-foreground/60 mb-6">Ready to create something extraordinary?</p>
+                    <p className="text-foreground/60 mb-6 font-medium">Ready to create something extraordinary?</p>
                     <button
                         onClick={() => {
                             const bot = document.querySelector('[data-floating-bot]');
                             if (bot) (bot as HTMLButtonElement).click();
                         }}
-                        className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary to-primary/90 text-white rounded-full text-sm font-bold uppercase tracking-widest hover:shadow-2xl hover:shadow-primary/30 hover:scale-105 transition-all duration-300"
+                        className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary to-accent text-white rounded-full text-sm font-bold uppercase tracking-widest hover:shadow-2xl hover:shadow-accent/30 hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/10"
                     >
-                        <Sparkles size={18} />
-                        Start Planning Your Event
+                        <ChefHat size={18} />
+                        Get Your Custom Quote Now
                     </button>
                 </motion.div>
             </div>
