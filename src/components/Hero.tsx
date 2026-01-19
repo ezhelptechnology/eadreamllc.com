@@ -27,14 +27,22 @@ const Hero = () => {
                 >
                     {/* Main Heading */}
                     <div className="relative">
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.1, duration: 0.8 }}
+                            className="text-sm uppercase tracking-[0.3em] text-accent font-bold mb-4"
+                        >
+                            Weddings • Corporate Events • Private Parties
+                        </motion.p>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, duration: 1 }}
-                            className="text-6xl md:text-7xl lg:text-8xl font-serif text-primary leading-[0.95]"
+                            className="text-5xl md:text-6xl lg:text-7xl font-serif text-primary leading-[0.95]"
                         >
-                            Taste the <br />
-                            <span className="italic text-accent font-light">Extraordinary</span>
+                            A Family Legacy, <br />
+                            <span className="italic text-accent font-light">Now Serving Charlotte</span>
                         </motion.h1>
                         <motion.div
                             initial={{ scaleX: 0 }}
@@ -48,7 +56,7 @@ const Hero = () => {
                             transition={{ delay: 0.5, duration: 1 }}
                             className="text-lg md:text-xl text-foreground/60 mt-8 max-w-lg leading-relaxed font-sans font-light tracking-wide"
                         >
-                            Serving the Greater Charlotte area, with a willingness to travel to create the right experience for you. Elevating your most precious moments with exquisite, bespoke menus and flawless service.
+                            Etheleen and Alma spent decades perfecting recipes that brought our family together. Now we&apos;re sharing that love with yours—one unforgettable event at a time.
                         </motion.p>
                     </div>
 
@@ -61,7 +69,7 @@ const Hero = () => {
                             }}
                             className="btn-primary flex items-center justify-center gap-3 shadow-2xl hover:shadow-primary/20 tracking-[0.2em] text-sm py-5 px-10"
                         >
-                            Order - Start Your Journey
+                            Get Your Free Quote
                         </button>
                         <button
                             onClick={() => {
@@ -72,9 +80,19 @@ const Hero = () => {
                             }}
                             className="text-sm px-10 py-5 border border-primary/20 font-sans font-medium uppercase tracking-[0.2em] hover:bg-primary/5 hover:border-primary text-primary transition-all duration-500 text-center"
                         >
-                            View Our Menus
+                            Explore Our Menus
                         </button>
                     </div>
+
+                    {/* Founding Client Badge */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/20 rounded-full"
+                    >
+                        <span className="text-xs font-bold text-accent uppercase tracking-wider">✨ Founding client rates available through 2026</span>
+                    </motion.div>
 
                     {/* Lead Generation Quote Section */}
                     <div id="quote" className="pt-8 w-full max-w-lg border-t border-primary/10">

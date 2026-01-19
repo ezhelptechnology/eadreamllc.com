@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChefHat, Leaf, UtensilsCrossed, Star, Sparkles, Clock, Heart, Award } from 'lucide-react';
+import { ChefHat, Leaf, UtensilsCrossed, Star, Sparkles, Clock, Heart, Shield } from 'lucide-react';
 
 const services = [
     {
@@ -40,8 +40,8 @@ const services = [
 ];
 
 const highlights = [
-    { icon: Award, label: '500+ Events', value: 'Catered' },
-    { icon: Heart, label: '100%', value: 'Satisfaction' },
+    { icon: Heart, label: '3rd Generation', value: 'Family Recipes' },
+    { icon: Shield, label: 'Licensed', value: '& Insured' },
     { icon: Clock, label: 'Same Day', value: 'Response' },
 ];
 
@@ -147,16 +147,6 @@ const Services = () => {
                                 <p className="text-foreground/70 leading-relaxed font-light">
                                     {service.description}
                                 </p>
-
-                                {/* Learn More Arrow */}
-                                <div className="mt-6 pt-4 border-t border-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <span className="text-sm font-medium text-accent flex items-center gap-2">
-                                        Learn more
-                                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    </span>
-                                </div>
                             </div>
                         </motion.div>
                     ))}

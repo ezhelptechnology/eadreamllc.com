@@ -71,11 +71,12 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* 3. CTA & Mobile Toggle (Right) */}
+        {/* 3. Phone & CTA (Right) */}
         <div className="flex items-center gap-4 relative z-10">
-          <Link href="/admin" className="hidden lg:block text-xs font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mr-2">
-            Admin
-          </Link>
+          <a href="tel:+17045551234" className="hidden lg:flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors">
+            <Phone size={16} />
+            <span>(704) 555-1234</span>
+          </a>
           <Link
             href="#quote"
             className="hidden md:flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-accent text-white rounded-full text-xs font-bold uppercase tracking-widest hover:shadow-2xl hover:shadow-accent/30 hover:scale-105 transition-all duration-300"
@@ -113,13 +114,14 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
-              <Link
-                href="/admin"
-                className="text-sm font-medium text-primary/70"
+              <a
+                href="tel:+17045551234"
+                className="flex items-center gap-2 text-sm font-medium text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Admin Access
-              </Link>
+                <Phone size={16} />
+                (704) 555-1234
+              </a>
               <button className="btn-primary w-full max-w-xs mt-4">
                 Get a Quote
               </button>
