@@ -1,22 +1,87 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const getClaudeClient = () => {
+const getClaudeClient = (): Anthropic | null => {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-        throw new Error('ANTHROPIC_API_KEY is not defined in environment variables');
+        console.error('ANTHROPIC_API_KEY is not defined in environment variables');
+        return null;
     }
     return new Anthropic({ apiKey });
 };
 
-export async function generateMenuFromDishes(selections: {
+interface MenuSelections {
     proteins: string[];
     preparation: string;
     sides: string;
     bread: string;
     allergies: string;
-}): Promise<string> {
+}
+
+function getFallbackProposal(selections: MenuSelections): string {
+    return `
+═══════════════════════════════════════════════════════════════
+                    ETHELEEN & ALMA'S DREAM, LLC
+                        CATERING PROPOSAL
+═══════════════════════════════════════════════════════════════
+
+CLIENT INFORMATION
+───────────────────────────────────────────────────────────────
+Submitted To: ____________________
+Event Date: ____________________
+Location: ____________________
+Guest Count: ____________________
+
+SCOPE OF WORK
+───────────────────────────────────────────────────────────────
+Etheleen & Alma's Dream, LLC proposes to provide bespoke 
+"Pick-up-and-go" catered meals for your special event.
+
+MENU OVERVIEW
+───────────────────────────────────────────────────────────────
+PROTEINS:
+${selections.proteins.map(p => `  • ${p}`).join('\n')}
+
+PREPARATION STYLE: ${selections.preparation || 'Chef\'s Choice'}
+
+SIDE DISHES: ${selections.sides || 'Chef\'s Selection'}
+
+BREAD SERVICE: ${selections.bread || 'Artisan Rolls'}
+
+DIETARY NOTES: ${selections.allergies || 'None specified'}
+
+PRICING
+───────────────────────────────────────────────────────────────
+Classic Package: $25 per person
+Premium Package: $30 per person (includes steak/seafood options)
+
+PAYMENT TERMS
+───────────────────────────────────────────────────────────────
+• 50% non-refundable deposit due upon contract signing
+• Remaining balance due upon completion of services
+• Final headcount required 7 days prior to event
+
+SIGNATURES
+───────────────────────────────────────────────────────────────
+Client Signature: ____________________ Date: ____________
+
+Etheleen & Alma's Dream, LLC: ____________ Date: ____________
+
+───────────────────────────────────────────────────────────────
+Questions? Contact us at (602) 318-4925 or yourmeal@eadreamllc.com
+═══════════════════════════════════════════════════════════════
+    `.trim();
+}
+
+export async function generateMenuFromDishes(selections: MenuSelections): Promise<string> {
+    const client = getClaudeClient();
+
+    // If no API key, use fallback immediately
+    if (!client) {
+        console.log('Using fallback proposal template (no API key configured)');
+        return getFallbackProposal(selections);
+    }
+
     try {
-        const client = getClaudeClient();
         const prompt = `You are an expert catering chef for "Etheleen & Alma's Dream," a premium catering service in the Greater Charlotte area.
 
 Your task is to create a formal "Catering Proposal Template" based on a client's specific experience curation:
@@ -66,25 +131,10 @@ Make the tone luxurious, professional, and bespoke.`;
 
         // Extract text from the response
         const textBlock = message.content.find(block => block.type === 'text');
-        return textBlock ? textBlock.text : 'Proposal generated successfully.';
+        return textBlock ? textBlock.text : getFallbackProposal(selections);
     } catch (error) {
         console.error('Claude generateMenuFromDishes failed, using fallback:', error);
-        // Fallback menu content
-        return `
-Etheleen & Alma's Dream, LLC
-Catering Proposal (Standard Template)
-
-MENU OVERVIEW:
-- Proteins: ${selections.proteins.join(', ')}
-- Style: ${selections.preparation}
-- Sides: ${selections.sides}
-- Bread: ${selections.bread}
-- Dietary: ${selections.allergies}
-
-PAYMENT TERMS:
-- A non-refundable deposit of 50% is due upon contract signing.
-- Final headcount due 7 days prior to event.
-        `.trim();
+        return getFallbackProposal(selections);
     }
 }
 
