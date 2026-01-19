@@ -20,8 +20,7 @@ const MenuShowcase = () => {
         proteins: [
             { name: "Herb-Roasted Chicken", image: "/food-chicken.jpg" },
             { name: "Slow-Braised Beef", image: "/food-ribs.jpg" },
-            { name: "Grilled Pork Tenderloin", image: "/food-ribs2.jpg" },
-            { name: "Roasted Lamb Shoulder", image: "/food-steak.jpg" }
+            { name: "Grilled Pork Tenderloin", image: "/food-pork.jpg" }
         ],
         sauces: ["Lemon Cream", "Herb Butter", "Red Wine Reduction"],
         sides: ["Green Beans", "Brussels Sprouts", "Rice Pilaf", "Lentils"],
@@ -35,8 +34,7 @@ const MenuShowcase = () => {
         proteins: [
             { name: "Pan-Seared Filet Mignon", image: "/food-steak.jpg" },
             { name: "Prime Ribeye Steak", image: "/food-ribs2.jpg" },
-            { name: "Chilean Sea Bass", image: "/food-chicken.jpg" },
-            { name: "Herb-Crusted Lamb Rack", image: "/food-ribs.jpg" }
+            { name: "Chilean Sea Bass", image: "/food-seabass.jpg" }
         ],
         sauces: ["Béarnaise", "Truffle Butter", "Champagne Cream"],
         sides: ["Roasted Brussels", "Wild Rice", "French Lentils", "Haricots Verts"],
