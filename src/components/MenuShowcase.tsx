@@ -33,7 +33,7 @@ const MenuShowcase = () => {
         description: "Elevated cuisine for discerning palates",
         proteins: [
             { name: "Pan-Seared Filet Mignon", image: "/food-steak.jpg" },
-            { name: "Prime Ribeye Steak", image: "/food-ribs2.jpg" },
+            { name: "Steak", image: "/food-ribs2.jpg" },
             { name: "Seafood Options Available", image: "/food-seafood.jpg" }
         ],
         sauces: ["Béarnaise", "Truffle Butter", "Champagne Cream"],
