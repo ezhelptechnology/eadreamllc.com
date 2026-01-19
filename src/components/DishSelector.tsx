@@ -177,7 +177,38 @@ const DishSelector = () => {
                     break;
 
                 case 'scheduling':
-                    botResponse = `Thank you for requesting ${currentInput}! 📅\n\n[Live Calendar Sync] Our Agent Bot 2 has updated the admin calendar. Admin will review the schedule and reach back out to you shortly to confirm if this works or if we need to suggest an alternative time. We look forward to seeing you!\n\nIs there anything else I can help you with? (Type "no" to finish)`;
+                    const scheduleInput = currentInput.toLowerCase();
+
+                    // Check if user wants a callback
+                    if (scheduleInput.includes('call') || scheduleInput.includes('phone') || scheduleInput === 'yes') {
+                        // Trigger AI voice callback
+                        if (customerInfo.phone) {
+                            try {
+                                await fetch('/api/schedule-callback', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        requestId: 'pending', // Will be updated
+                                        customerPhone: customerInfo.phone,
+                                        customerName: customerInfo.name,
+                                        eventDetails: {
+                                            eventDate: customerInfo.eventDate,
+                                            guestCount: customerInfo.headcount,
+                                            eventType: 'Catering'
+                                        }
+                                    }),
+                                });
+                                botResponse = `📞 Perfect! Alma from our team will call you at ${customerInfo.phone} within the next few minutes to discuss your event and schedule your tasting.\n\nIf you miss the call, don't worry - we'll try again or you can reach us at (602) 318-4925.\n\nIs there anything else I can help you with? (Type "no" to finish)`;
+                            } catch {
+                                botResponse = `We'll have someone call you at ${customerInfo.phone} shortly to schedule your tasting!\n\nAlternatively, feel free to call us directly at (602) 318-4925.\n\nIs there anything else? (Type "no" to finish)`;
+                            }
+                        } else {
+                            botResponse = `Please call us at (602) 318-4925 to schedule your tasting - we'd love to hear from you!\n\nIs there anything else I can help you with? (Type "no" to finish)`;
+                        }
+                    } else {
+                        // Standard scheduling response
+                        botResponse = `Thank you for requesting ${currentInput}! 📅\n\nOur team will review your preferred time and reach out to confirm. We typically respond within 24 hours.\n\nWould you like us to call you to finalize details? (Type "yes" for a callback, or "no" to finish)`;
+                    }
                     setStep('done');
                     break;
 
