@@ -73,9 +73,9 @@ const Header = () => {
 
         {/* 3. Phone & CTA (Right) */}
         <div className="flex items-center gap-4 relative z-10">
-          <a href="tel:+17045551234" className="hidden lg:flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors">
+          <a href="tel:6023184925" className="hidden lg:flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors">
             <Phone size={16} />
-            <span>(704) 555-1234</span>
+            <span>(602) 318-4925</span>
           </a>
           <Link
             href="#quote"
@@ -115,12 +115,12 @@ const Header = () => {
                 </Link>
               ))}
               <a
-                href="tel:+17045551234"
+                href="tel:6023184925"
                 className="flex items-center gap-2 text-sm font-medium text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Phone size={16} />
-                (704) 555-1234
+                (602) 318-4925
               </a>
               <button className="btn-primary w-full max-w-xs mt-4">
                 Get a Quote

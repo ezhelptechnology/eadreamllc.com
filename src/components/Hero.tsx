@@ -33,7 +33,7 @@ const Hero = () => {
                             transition={{ delay: 0.1, duration: 0.8 }}
                             className="text-sm uppercase tracking-[0.3em] text-accent font-bold mb-4"
                         >
-                            Weddings • Corporate Events • Private Parties
+                            Special Events • Corporate Events • Private Parties
                         </motion.p>
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
@@ -94,28 +94,7 @@ const Hero = () => {
                         <span className="text-xs font-bold text-accent uppercase tracking-wider">✨ Founding client rates available through 2026</span>
                     </motion.div>
 
-                    {/* Lead Generation Quote Section */}
-                    <div id="quote" className="pt-8 w-full max-w-lg border-t border-primary/10">
-                        <p className="text-xs uppercase tracking-[0.2em] text-foreground/50 mb-4 text-center lg:text-left">
-                            Get Your Free Custom Quote
-                        </p>
-                        <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="flex-1 px-5 py-4 bg-white/80 backdrop-blur-sm border border-primary/20 rounded-sm text-sm placeholder:text-foreground/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
-                            />
-                            <button
-                                type="submit"
-                                className="btn-primary px-8 py-4 text-xs tracking-[0.15em] whitespace-nowrap hover:shadow-lg hover:shadow-primary/20 transition-all"
-                            >
-                                Get Quote
-                            </button>
-                        </form>
-                        <p className="text-[10px] text-foreground/40 mt-3 text-center lg:text-left">
-                            ✨ Free consultation • No commitment required
-                        </p>
-                    </div>
+
                 </motion.div>
 
                 {/* Right Image Grid - User Images */}

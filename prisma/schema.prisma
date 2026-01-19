@@ -8,20 +8,19 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -36,15 +35,15 @@ model Session {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?
   email         String?   @unique
-  emailVerified DateTime?
-  image         String?
   password      String?
-  accounts      Account[]
-  sessions      Session[]
+  name          String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
 }
 
 model VerificationToken {
@@ -56,47 +55,33 @@ model VerificationToken {
 }
 
 model CateringRequest {
-  id              String   @id @default(cuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Customer Info
-  customerName    String
-  customerEmail   String
-  customerPhone   String?
-  eventDate       String?
-  eventLocation   String?
-  headcount       Int      @default(50)
-  
-  // Selections from Bot
-  proteins        String   // JSON array as string
-  preparation     String?
-  sides           String?
-  bread           String?
-  allergies       String?
-  
-  // Status
-  status          String   @default("PENDING") // PENDING, PROPOSAL_SENT, APPROVED, COMPLETED
-  
-  // Relations
-  proposals       Proposal[]
+  id            String     @id @default(cuid())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  status        String     @default("PENDING")
+  allergies     String?
+  bread         String?
+  customerEmail String
+  customerName  String
+  customerPhone String?
+  eventDate     String?
+  eventLocation String?
+  headcount     Int        @default(50)
+  preparation   String?
+  proteins      String
+  sides         String?
+  proposals     Proposal[]
 }
 
 model Proposal {
-  id              String   @id @default(cuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Content
-  content         String   @db.Text // The actual proposal markdown
-  estimatedCost   Float
-  version         Int      @default(1)
-  
-  // Status
-  status          String   @default("DRAFT") // DRAFT, SENT, APPROVED, REJECTED
-  sentAt          DateTime?
-  
-  // Relation
-  requestId       String
-  request         CateringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  content       String
+  estimatedCost Float
+  version       Int             @default(1)
+  status        String          @default("DRAFT")
+  sentAt        DateTime?
+  requestId     String
+  request       CateringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 }
