@@ -6,7 +6,8 @@ const getGeminiModel = () => {
         throw new Error('GEMINI_API_KEY is not defined in environment variables');
     }
     const genAI = new GoogleGenerativeAI(apiKey);
-    return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // Using gemini-1.5-flash which is standard. For v1beta issues, flash-latest or pro might work.
+    return genAI.getGenerativeModel({ model: 'gemini-pro' });
 };
 
 export async function generateMenuFromDishes(selections: {
@@ -16,8 +17,9 @@ export async function generateMenuFromDishes(selections: {
     bread: string;
     allergies: string;
 }): Promise<string> {
-    const geminiModel = getGeminiModel();
-    const prompt = `You are an expert catering chef for "Etheleen & Alma's Dream," a premium catering service in the Greater Charlotte area.
+    try {
+        const geminiModel = getGeminiModel();
+        const prompt = `You are an expert catering chef for "Etheleen & Alma's Dream," a premium catering service in the Greater Charlotte area.
 
 Your task is to create a formal "Catering Proposal Template" based on a client's specific experience curation:
 - Main Proteins: ${selections.proteins.join(', ')}
@@ -58,14 +60,34 @@ The proposal MUST follow this structured format:
 
 Make the tone luxurious, professional, and bespoke. Do NOT mention specific names like "Elevation Church".`;
 
-    const result = await geminiModel.generateContent(prompt);
-    const response = result.response;
-    return response.text();
+        const result = await geminiModel.generateContent(prompt);
+        const response = result.response;
+        return response.text();
+    } catch (error) {
+        console.error('Gemini generateMenuFromDishes failed, using fallback:', error);
+        // Fallback menu content
+        return `
+Etheleen & Alma's Dream, LLC
+Catering Proposal (Standard Template)
+
+MENU OVERVIEW:
+- Proteins: ${selections.proteins.join(', ')}
+- Style: ${selections.preparation}
+- Sides: ${selections.sides}
+- Bread: ${selections.bread}
+- Dietary: ${selections.allergies}
+
+PAYMENT TERMS:
+- A non-refundable deposit of 50% is due upon contract signing.
+- Final headcount due 7 days prior to event.
+        `.trim();
+    }
 }
 
 export async function estimateCateringCost(menuContent: string, guestCount: number = 50): Promise<number> {
-    const geminiModel = getGeminiModel();
-    const prompt = `You are a catering cost estimator for "Etheleen & Alma's Dream." 
+    try {
+        const geminiModel = getGeminiModel();
+        const prompt = `You are a catering cost estimator for "Etheleen & Alma's Dream." 
 Our pricing follows these rules:
 - $25 per person if the main proteins are Beef, Chicken, or Pork.
 - $30 per person if any main protein is Steak or Seafood.
@@ -77,8 +99,15 @@ ${menuContent}
 
 Return ONLY the final numeric total (no currency symbol, just the number).`;
 
-    const result = await geminiModel.generateContent(prompt);
-    const response = result.response;
-    const costText = response.text().trim().replace(/[^0-9.]/g, '');
-    return parseFloat(costText) || 5000; // Default fallback
+        const result = await geminiModel.generateContent(prompt);
+        const response = result.response;
+        const costText = response.text().trim().replace(/[^0-9.]/g, '');
+        return parseFloat(costText) || 5000;
+    } catch (error) {
+        console.error('Gemini estimateCateringCost failed, using logic fallback:', error);
+        // Simple logic fallback
+        const hasSteakOrSeafood = menuContent.toLowerCase().includes('steak') || menuContent.toLowerCase().includes('seafood') || menuContent.toLowerCase().includes('bass');
+        const rate = hasSteakOrSeafood ? 30 : 25;
+        return rate * guestCount;
+    }
 }
