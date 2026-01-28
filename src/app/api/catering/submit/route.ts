@@ -79,8 +79,8 @@ export async function POST(request: NextRequest) {
         });
         console.log('Catering request created:', cateringRequest.id);
 
-        // Generate the proposal using Gemini
-        console.log('Generating proposal with Gemini...');
+        // Generate the proposal using Claude
+        console.log('Generating proposal with Claude...');
         const proposalContent = await generateMenuFromDishes({
             proteins,
             preparation: preparation || '',

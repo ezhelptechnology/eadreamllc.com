@@ -1,7 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Claude client
+// Claude client - primary and only AI provider
 const getClaudeClient = (): Anthropic | null => {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
@@ -9,17 +8,6 @@ const getClaudeClient = (): Anthropic | null => {
         return null;
     }
     return new Anthropic({ apiKey });
-};
-
-// Gemini client (backup)
-const getGeminiClient = () => {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        console.log('GEMINI_API_KEY not configured');
-        return null;
-    }
-    const genAI = new GoogleGenerativeAI(apiKey);
-    return genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 };
 
 interface MenuSelections {
@@ -128,13 +116,13 @@ Questions? Contact us at (602) 318-4925 or yourmeal@eadreamllc.com
     `.trim();
 }
 
-// Try Claude first
+// Generate menu using Claude AI
 async function tryClaudeGeneration(selections: MenuSelections): Promise<string | null> {
     const client = getClaudeClient();
     if (!client) return null;
 
     try {
-        console.log('Attempting Claude generation...');
+        console.log('Generating proposal with Claude...');
         const message = await client.messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 1024,
@@ -148,48 +136,23 @@ async function tryClaudeGeneration(selections: MenuSelections): Promise<string |
         }
         return null;
     } catch (error) {
-        console.error('Claude failed:', error);
-        return null;
-    }
-}
-
-// Try Gemini as backup
-async function tryGeminiGeneration(selections: MenuSelections): Promise<string | null> {
-    const model = getGeminiClient();
-    if (!model) return null;
-
-    try {
-        console.log('Attempting Gemini generation (backup)...');
-        const result = await model.generateContent(getPrompt(selections));
-        const response = result.response;
-        const text = response.text();
-        if (text) {
-            console.log('Gemini generation successful');
-            return text;
-        }
-        return null;
-    } catch (error) {
-        console.error('Gemini failed:', error);
+        console.error('Claude generation failed:', error);
         return null;
     }
 }
 
 export async function generateMenuFromDishes(selections: MenuSelections): Promise<string> {
-    // Try Claude first (primary)
+    // Try Claude (primary AI provider)
     const claudeResult = await tryClaudeGeneration(selections);
     if (claudeResult) return claudeResult;
 
-    // Try Gemini as backup
-    const geminiResult = await tryGeminiGeneration(selections);
-    if (geminiResult) return geminiResult;
-
-    // Fall back to static template
-    console.log('All AI agents failed, using static fallback template');
+    // Fall back to static template if Claude fails
+    console.log('Claude unavailable, using static fallback template');
     return getFallbackProposal(selections);
 }
 
 export async function estimateCateringCost(menuContent: string, guestCount: number = 50): Promise<number> {
-    // Simple logic - no need to call AI for this
+    // Simple logic - no need to call AI for cost estimation
     const hasSteakOrSeafood = menuContent.toLowerCase().includes('steak') ||
         menuContent.toLowerCase().includes('seafood') ||
         menuContent.toLowerCase().includes('bass') ||

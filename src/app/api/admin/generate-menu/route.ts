@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { generateMenuFromDishes } from '@/lib/gemini';
+import { generateMenuFromDishes } from '@/lib/claude';
 
 export async function POST(req: Request) {
     try {
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         // Parse proteins
         const proteins = JSON.parse(cateringRequest.proteins);
 
-        // Generate menu using Gemini AI with the new selections format
+        // Generate menu using Claude AI with the new selections format
         const menuContent = await generateMenuFromDishes({
             proteins,
             preparation: cateringRequest.preparation || '',
