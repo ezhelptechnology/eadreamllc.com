@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Send, CheckCircle2, RefreshCcw, Bell } from 'lucide-react';
-import Image from 'next/image';
+import { Trophy, Send, CheckCircle2, Bell } from 'lucide-react';
 
 interface Message {
     id: string;
@@ -21,7 +20,6 @@ const AAUMealPrepPage = () => {
     ]);
     const [input, setInput] = useState('');
     const [isDone, setIsDone] = useState(false);
-    const [step, setStep] = useState<'initial' | 'done'>('initial');
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -35,11 +33,10 @@ const AAUMealPrepPage = () => {
 
         const userMsg: Message = { id: Date.now().toString(), text: input, sender: 'user' };
         setMessages(prev => [...prev, userMsg]);
-        const currentInput = input;
         setInput('');
 
         setTimeout(() => {
-            let botResponse = "Got it! Your team is on the priority list. We'll reach out to your email shortly to discuss your upcoming schedule. Let's fuel the win! 🏆";
+            const botResponse = "Got it! Your team is on the priority list. We'll reach out to your email shortly to discuss your upcoming schedule. Let's fuel the win! 🏆";
 
             setMessages(prev => [...prev, {
                 id: (Date.now() + 1).toString(),
@@ -47,7 +44,6 @@ const AAUMealPrepPage = () => {
                 sender: 'bot'
             }]);
             setIsDone(true);
-            setStep('done');
         }, 800);
     };
 

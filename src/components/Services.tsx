@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ChefHat, Leaf, UtensilsCrossed, Star, Sparkles, Clock, Heart, Shield } from 'lucide-react';
 
@@ -171,11 +172,12 @@ const Services = () => {
                         {/* Decorative Background Glow for Image */}
                         <div className="absolute inset-0 bg-accent/5 blur-[80px] rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
 
-                        <div className="relative rounded-[3rem] overflow-hidden border border-primary/10 bg-white/50 backdrop-blur-md shadow-2xl">
-                            <img
+                        <div className="relative rounded-[3rem] overflow-hidden border border-primary/10 bg-white/50 backdrop-blur-md shadow-2xl h-[400px]">
+                            <Image
                                 src="/how-it-works.png"
                                 alt="How to build your menu using our chatbot"
-                                className="w-full h-auto"
+                                fill
+                                className="object-cover"
                             />
                         </div>
 

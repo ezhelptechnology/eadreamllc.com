@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ChefHat, Lock, Mail, AlertCircle } from 'lucide-react';
@@ -31,7 +32,7 @@ export default function AdminLogin() {
                 router.push('/admin');
                 router.refresh();
             }
-        } catch (error) {
+        } catch {
             setError('An error occurred. Please try again.');
         } finally {
             setIsLoading(false);
@@ -51,7 +52,7 @@ export default function AdminLogin() {
                         <ChefHat size={40} className="text-white" />
                     </div>
                     <h1 className="text-4xl font-bold text-primary mb-2">Admin Portal</h1>
-                    <p className="text-foreground/60">Etheleen & Alma's Dream</p>
+                    <p className="text-foreground/60">Etheleen &amp; Alma&apos;s Dream</p>
                 </div>
 
                 {/* Login Form */}
@@ -126,12 +127,12 @@ export default function AdminLogin() {
                 </div>
 
                 <div className="mt-6 text-center">
-                    <a
+                    <Link
                         href="/"
                         className="text-sm text-primary hover:underline"
                     >
                         ← Back to website
-                    </a>
+                    </Link>
                 </div>
             </motion.div>
         </div>

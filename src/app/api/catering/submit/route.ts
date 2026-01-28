@@ -1,6 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateMenuFromDishes } from '@/lib/claude';
+import nodemailer from 'nodemailer';
+import { logError } from '@/lib/logger';
+
+interface CateringRequest {
+    id: string;
+    customerName: string;
+    customerEmail: string;
+    customerPhone: string | null;
+    eventDate: string | null;
+    eventLocation: string | null;
+    headcount: number;
+    proteins: string;
+    preparation: string | null;
+    sides: string | null;
+    bread: string | null;
+    allergies: string | null;
+    status: string;
+}
+
+interface Proposal {
+    id: string;
+    content: string;
+    estimatedCost: number;
+    version: number;
+    status: string;
+    requestId: string;
+}
+
+interface Selections {
+    proteins: string[];
+    preparation?: string;
+    sides?: string;
+    bread?: string;
+    allergies?: string;
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -94,17 +129,22 @@ export async function POST(request: NextRequest) {
             message: 'Your custom proposal has been sent to your email!'
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorObj = error instanceof Error ? error : new Error(String(error));
+        await logError(errorObj, { source: 'CATERING_SUBMIT', path: '/api/catering/submit' });
+
         console.error('Error creating catering request:', error);
+        const errorMessage = errorObj.message;
+        const errorStack = errorObj.stack;
         return NextResponse.json({
             error: 'Failed to create request',
-            details: error.message || 'Unknown error',
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            details: errorMessage,
+            stack: process.env.NODE_ENV === 'development' ? errorStack : undefined
         }, { status: 500 });
     }
 }
 
-async function sendEmails(request: any, proposal: any, selections: any) {
+async function sendEmails(request: CateringRequest, proposal: Proposal, selections: Selections) {
     const adminEmail = 'yourmeal@eadreamllc.com';
 
     // Format the admin report
@@ -168,7 +208,6 @@ The Etheleen & Alma's Dream Team
     const smtpPass = process.env.SMTP_PASS;
 
     if (smtpHost && smtpPort && smtpUser && smtpPass) {
-        const nodemailer = require('nodemailer');
         const transporter = nodemailer.createTransport({
             host: smtpHost,
             port: parseInt(smtpPort),

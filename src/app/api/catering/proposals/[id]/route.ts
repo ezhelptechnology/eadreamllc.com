@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import nodemailer from 'nodemailer';
 
 // GET a single proposal
 export async function GET(
@@ -32,7 +33,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { content, estimatedCost, status } = body;
+        const { content, estimatedCost } = body;
 
         const existingProposal = await prisma.proposal.findUnique({
             where: { id },
@@ -112,7 +113,6 @@ The Etheleen & Alma's Dream Team
         const smtpPass = process.env.SMTP_PASS;
 
         if (smtpHost && smtpPort && smtpUser && smtpPass) {
-            const nodemailer = require('nodemailer');
             const transporter = nodemailer.createTransport({
                 host: smtpHost,
                 port: parseInt(smtpPort),

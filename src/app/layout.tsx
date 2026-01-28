@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { cormorant, jost } from "@/lib/fonts";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingExperienceBot from "@/components/FloatingExperienceBot";
@@ -16,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
       <body>
         <ClientOptimizations />
         <Header />

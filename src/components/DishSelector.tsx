@@ -170,7 +170,7 @@ const DishSelector = () => {
                             botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
                             setStep('done');
                         }
-                    } catch (error) {
+                    } catch {
                         botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
                         setStep('done');
                     }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, ClipboardList, RefreshCcw, Edit, Mail, CheckCircle2, XCircle, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Send, ClipboardList, RefreshCcw, XCircle, Loader2 } from 'lucide-react';
 
 interface CateringRequest {
     id: string;
@@ -37,7 +37,7 @@ interface Message {
     text: string;
     sender: 'bot' | 'user';
     type?: 'text' | 'request-list' | 'proposal-view';
-    data?: any;
+    data?: unknown;
 }
 
 const AdminBot = () => {
@@ -50,7 +50,6 @@ const AdminBot = () => {
     ]);
     const [input, setInput] = useState('');
     const [requests, setRequests] = useState<CateringRequest[]>([]);
-    const [selectedRequest, setSelectedRequest] = useState<CateringRequest | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [editingProposal, setEditingProposal] = useState<Proposal | null>(null);
     const [editContent, setEditContent] = useState('');
@@ -78,7 +77,7 @@ const AdminBot = () => {
         }
     };
 
-    const addBotMessage = (text: string, type: 'text' | 'request-list' | 'proposal-view' = 'text', data?: any) => {
+    const addBotMessage = (text: string, type: 'text' | 'request-list' | 'proposal-view' = 'text', data?: unknown) => {
         const botMessage: Message = {
             id: Date.now().toString(),
             text,
@@ -116,7 +115,6 @@ const AdminBot = () => {
             const requestId = command.replace('view ', '').trim();
             const req = requests.find(r => r.id === requestId || r.id.startsWith(requestId));
             if (req) {
-                setSelectedRequest(req);
                 const proteins = JSON.parse(req.proteins);
                 const latestProposal = req.proposals[0];
                 addBotMessage(
@@ -188,7 +186,7 @@ const AdminBot = () => {
                     } else {
                         addBotMessage(`❌ Error: ${data.error}`);
                     }
-                } catch (error) {
+                } catch {
                     addBotMessage(`❌ Failed to resend proposal. Please try again.`);
                 }
             } else {
@@ -223,7 +221,7 @@ const AdminBot = () => {
             } else {
                 addBotMessage(`❌ Error: ${data.error}`);
             }
-        } catch (error) {
+        } catch {
             addBotMessage(`❌ Failed to save proposal. Please try again.`);
         }
 
@@ -284,8 +282,8 @@ const AdminBot = () => {
                                                     </div>
                                                     <div className="text-right">
                                                         <span className={`text-xs px-2 py-1 rounded-full ${req.status === 'PROPOSAL_SENT' ? 'bg-blue-500/20 text-blue-400' :
-                                                                req.status === 'APPROVED' ? 'bg-green-500/20 text-green-400' :
-                                                                    'bg-yellow-500/20 text-yellow-400'
+                                                            req.status === 'APPROVED' ? 'bg-green-500/20 text-green-400' :
+                                                                'bg-yellow-500/20 text-yellow-400'
                                                             }`}>
                                                             {req.status}
                                                         </span>

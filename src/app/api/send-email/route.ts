@@ -15,7 +15,7 @@ export async function POST(req: Request) {
             message: 'Request logged. Please use the new /api/catering/submit endpoint.',
             deprecated: true
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error in send-email API:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }

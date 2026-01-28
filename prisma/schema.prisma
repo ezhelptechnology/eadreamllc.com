@@ -85,3 +85,12 @@ model Proposal {
   requestId     String
   request       CateringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 }
+
+model ErrorLog {
+  id        String   @id @default(cuid())
+  message   String
+  stack     String?
+  source    String?
+  path      String?
+  timestamp DateTime @default(now())
+}

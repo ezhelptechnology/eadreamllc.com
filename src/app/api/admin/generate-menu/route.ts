@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { generateMenuFromDishes, estimateCateringCost } from '@/lib/gemini';
+import { generateMenuFromDishes } from '@/lib/gemini';
 
 export async function POST(req: Request) {
     try {
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
             disclaimer: 'Please be advised this is an estimated cost. Final pricing will be determined by our team based on specific event requirements, guest count, and service details.'
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error generating menu:', error);
         return NextResponse.json({ error: 'Failed to generate menu' }, { status: 500 });
     }

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const requests = await prisma.cateringRequest.findMany({
             include: {
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
         });
 
         return NextResponse.json({ requests });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching requests:', error);
         return NextResponse.json({ error: 'Failed to fetch requests' }, { status: 500 });
     }

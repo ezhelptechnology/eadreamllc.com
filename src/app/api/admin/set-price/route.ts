@@ -27,7 +27,7 @@ export async function POST(req: Request) {
             proposal: updatedProposal
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error setting final price:', error);
         return NextResponse.json({ error: 'Failed to set final price' }, { status: 500 });
     }
