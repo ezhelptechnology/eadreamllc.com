@@ -17,6 +17,7 @@ export interface CustomerInfo {
     customerPhone: string;
     eventDate: string;
     eventLocation: string;
+    eventType: string;
     headcount: number;
     proteins: string[];
     preparation: string;
@@ -200,6 +201,7 @@ export async function generatePersonalizedProposal(info: CustomerInfo): Promise<
 **Prepared For:** ${info.customerName}  
 **Contact Email:** ${info.customerEmail}  
 **Contact Phone:** ${info.customerPhone || 'Not provided'}  
+**Event Type:** ${info.eventType || 'Special Event'}  
 **Event Date:** ${formattedEventDate}  
 **Event Location:** ${info.eventLocation || 'To be confirmed'}  
 **Guest Count:** ${info.headcount} attendees  
@@ -386,6 +388,7 @@ export async function generateMenuFromDishes(selections: MenuSelections): Promis
         customerPhone: '',
         eventDate: 'TBD',
         eventLocation: 'TBD',
+        eventType: '',
         headcount: 50,
         ...selections
     };

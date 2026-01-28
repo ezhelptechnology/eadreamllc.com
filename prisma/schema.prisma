@@ -66,6 +66,7 @@ model CateringRequest {
   customerPhone String?
   eventDate     String?
   eventLocation String?
+  eventType     String?
   headcount     Int        @default(50)
   preparation   String?
   proteins      String

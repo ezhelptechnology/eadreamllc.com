@@ -12,6 +12,7 @@ interface CateringRequest {
     customerPhone: string | null;
     eventDate: string | null;
     eventLocation: string | null;
+    eventType: string | null;
     headcount: number;
     proteins: string;
     preparation: string | null;
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
             customerPhone,
             eventDate,
             eventLocation,
+            eventType,
             headcount,
             proteins,
             preparation,
@@ -61,6 +63,7 @@ export async function POST(request: NextRequest) {
                 customerPhone: customerPhone || null,
                 eventDate: eventDate || null,
                 eventLocation: eventLocation || null,
+                eventType: eventType || null,
                 headcount: headcount || 50,
                 proteins: JSON.stringify(proteins),
                 preparation: preparation || null,
@@ -79,6 +82,7 @@ export async function POST(request: NextRequest) {
             customerPhone: customerPhone || '',
             eventDate: eventDate || 'TBD',
             eventLocation: eventLocation || 'TBD',
+            eventType: eventType || '',
             headcount: headcount || 50,
             proteins,
             preparation: preparation || 'Chef\'s Choice',
@@ -189,9 +193,10 @@ Status: PENDING ADMIN REVIEW
 1. Name: ${request.customerName}
 2. Email: ${request.customerEmail}
 3. Phone: ${request.customerPhone || 'Not provided'}
-4. Event Date: ${request.eventDate || 'TBD'}
-5. Event Location: ${request.eventLocation || 'TBD'}
-6. Guest Count: ${request.headcount}
+4. Event Type: ${request.eventType || 'Not specified'}
+5. Event Date: ${request.eventDate || 'TBD'}
+6. Event Location: ${request.eventLocation || 'TBD'}
+7. Guest Count: ${request.headcount}
 
 🍽️ MENU SELECTIONS
 -------------------
@@ -261,6 +266,10 @@ ${proposal.content}
                 <tr style="border-bottom: 1px solid #eee;">
                     <td style="padding: 12px 0; color: #888;">Your Name</td>
                     <td style="padding: 12px 0; color: #333;">${request.customerName}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px 0; color: #888;">Event Type</td>
+                    <td style="padding: 12px 0; color: #333;">${request.eventType || 'Special Event'}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #eee;">
                     <td style="padding: 12px 0; color: #888;">Event Date</td>
@@ -350,6 +359,7 @@ We've received your catering request and are thrilled to help create an unforget
 --------------------------
 Reference Number: ${proposalRef}
 Your Name: ${request.customerName}
+Event Type: ${request.eventType || 'Special Event'}
 Event Date: ${request.eventDate || 'To be confirmed'}
 Guest Count: ${request.headcount} attendees
 Protein Selections: ${selections.proteins.join(', ')}

@@ -11,7 +11,7 @@ interface Message {
     timestamp: Date;
 }
 
-type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'scheduling' | 'done';
+type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'eventType' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'scheduling' | 'done';
 
 const DishSelector = () => {
     const [messages, setMessages] = useState<Message[]>([
@@ -30,6 +30,7 @@ const DishSelector = () => {
         phone: '',
         eventDate: '',
         headcount: 50,
+        eventType: '',
     });
     const [selections, setSelections] = useState({
         proteins: [] as string[],
@@ -106,8 +107,14 @@ const DishSelector = () => {
                 case 'headcount':
                     const headcount = parseInt(currentInput) || 50;
                     setCustomerInfo(prev => ({ ...prev, headcount }));
+                    setStep('eventType');
+                    botResponse = `Perfect! Planning for ${headcount} guests. 🎉\n\nWhat type of event is this?\n(e.g., Wedding, Corporate Event, Birthday Party, Family Reunion, Church Event, Other)`;
+                    break;
+
+                case 'eventType':
+                    setCustomerInfo(prev => ({ ...prev, eventType: currentInput }));
                     setStep('sliders');
-                    botResponse = `Perfect! Planning for ${headcount} guests. 🍽️\n\nOur packages: $25/person (Beef, Chicken, Pork) or $30/person (Steak, Seafood).\n\nWhat's your FIRST protein? (Choose ONE only)`;
+                    botResponse = `Wonderful! A ${currentInput} sounds exciting! 🍽️\n\nNow let's design your menu.\n\nOur packages: $25/person (Beef, Chicken, Pork) or $30/person (Steak, Seafood).\n\nWhat's your FIRST protein? (Choose ONE only)`;
                     break;
 
                 case 'sliders':
@@ -154,6 +161,7 @@ const DishSelector = () => {
                                 customerEmail: customerInfo.email,
                                 customerPhone: customerInfo.phone,
                                 eventDate: customerInfo.eventDate,
+                                eventType: customerInfo.eventType,
                                 headcount: customerInfo.headcount,
                                 proteins: [...selections.proteins],
                                 preparation: selections.preparation,
@@ -235,7 +243,7 @@ const DishSelector = () => {
             sender: 'bot',
             timestamp: new Date(),
         }]);
-        setCustomerInfo({ name: '', email: '', phone: '', eventDate: '', headcount: 50 });
+        setCustomerInfo({ name: '', email: '', phone: '', eventDate: '', headcount: 50, eventType: '' });
         setSelections({ proteins: [], preparation: '', sides: '', bread: '', allergies: '' });
         setStep('name');
         setIsDone(false);
@@ -248,6 +256,7 @@ const DishSelector = () => {
             case 'phone': return "555-123-4567 or skip";
             case 'eventDate': return "March 15, 2026";
             case 'headcount': return "50";
+            case 'eventType': return "Wedding, Corporate, Birthday...";
             case 'sliders': return "ONE protein only (e.g. Beef)";
             case 'preparation': return "e.g. Grilled";
             case 'sides': return "e.g. Rice, Green Beans";
