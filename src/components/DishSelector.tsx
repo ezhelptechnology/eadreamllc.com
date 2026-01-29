@@ -11,7 +11,7 @@ interface Message {
     timestamp: Date;
 }
 
-type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'eventType' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'scheduling' | 'done';
+type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'eventType' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'done';
 
 const DishSelector = () => {
     const [messages, setMessages] = useState<Message[]>([
@@ -172,8 +172,9 @@ const DishSelector = () => {
                         });
 
                         if (response.ok) {
-                            botResponse = `🎉 Proposal Sent, ${customerInfo.name}!\n\nYour preliminary proposal is in your inbox at ${customerInfo.email}.\n\nNext Step: We'd love to host you for a tasting experience! What is your preferred date and time for a tasting? (e.g., Next Friday at 2pm)`;
-                            setStep('scheduling');
+                            botResponse = `🎉 Proposal Sent, ${customerInfo.name}!\n\nYour custom proposal has been sent to ${customerInfo.email}.\n\nOur team will review your request and be in touch shortly to discuss next steps and answer any questions you may have.\n\nThank you for choosing Etheleen & Alma's Dream!`;
+                            setStep('done');
+                            setIsDone(true);
                         } else {
                             botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
                             setStep('done');
@@ -184,50 +185,8 @@ const DishSelector = () => {
                     }
                     break;
 
-                case 'scheduling':
-                    const scheduleInput = currentInput.toLowerCase();
-
-                    // Check if user wants a callback
-                    if (scheduleInput.includes('call') || scheduleInput.includes('phone') || scheduleInput === 'yes') {
-                        // Trigger AI voice callback
-                        if (customerInfo.phone) {
-                            try {
-                                await fetch('/api/schedule-callback', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        requestId: 'pending', // Will be updated
-                                        customerPhone: customerInfo.phone,
-                                        customerName: customerInfo.name,
-                                        eventDetails: {
-                                            eventDate: customerInfo.eventDate,
-                                            guestCount: customerInfo.headcount,
-                                            eventType: 'Catering'
-                                        }
-                                    }),
-                                });
-                                botResponse = `📞 Perfect! Alma from our team will call you at ${customerInfo.phone} within the next few minutes to discuss your event and schedule your tasting.\n\nIf you miss the call, don't worry - we'll try again or you can reach us at (602) 318-4925.\n\nIs there anything else I can help you with? (Type "no" to finish)`;
-                            } catch {
-                                botResponse = `We'll have someone call you at ${customerInfo.phone} shortly to schedule your tasting!\n\nAlternatively, feel free to call us directly at (602) 318-4925.\n\nIs there anything else? (Type "no" to finish)`;
-                            }
-                        } else {
-                            botResponse = `Please call us at (602) 318-4925 to schedule your tasting - we'd love to hear from you!\n\nIs there anything else I can help you with? (Type "no" to finish)`;
-                        }
-                    } else {
-                        // Standard scheduling response
-                        botResponse = `Thank you for requesting ${currentInput}! 📅\n\nOur team will review your preferred time and reach out to confirm. We typically respond within 24 hours.\n\nWould you like us to call you to finalize details? (Type "yes" for a callback, or "no" to finish)`;
-                    }
-                    setStep('done');
-                    break;
-
                 case 'done':
-                    const doneInput = currentInput.toLowerCase();
-                    if (doneInput === 'no' || doneInput === 'nope' || doneInput === 'that\'s all' || doneInput === 'nothing' || doneInput === 'all good' || doneInput === 'i\'m good') {
-                        botResponse = `It was a pleasure assisting you today! 🌟\n\nYour tasting has been requested and your proposal has been sent. Our team will reach out shortly to confirm everything.\n\nThank you for choosing Etheleen & Alma's Dream. We can't wait to create something extraordinary for you!`;
-                        setIsDone(true);
-                    } else {
-                        botResponse = `I appreciate you reaching out! For any additional questions or special requests, please email us at yourmeal@eadreamllc.com or call us directly. Our team will be happy to assist you.\n\nIs there anything else? (Type "no" to finish)`;
-                    }
+                    botResponse = `Thank you for your interest! If you have any additional questions, please email us at yourmeal@eadreamllc.com or call (602) 318-4925.`;
                     break;
             }
 
@@ -262,8 +221,7 @@ const DishSelector = () => {
             case 'sides': return "e.g. Rice, Green Beans";
             case 'bread': return "Rolls, Biscuits, or Toast";
             case 'allergies': return "none or list allergies";
-            case 'scheduling': return "Preferred date & time...";
-            case 'done': return "Type 'no' to finish or ask a question...";
+            case 'done': return "Type your question...";
             default: return "Type here...";
         }
     };
@@ -292,8 +250,7 @@ const DishSelector = () => {
                         <p className="text-[11px] font-medium opacity-80 uppercase tracking-widest text-accent">
                             {step === 'name' || step === 'email' || step === 'phone' || step === 'eventDate' || step === 'headcount'
                                 ? 'Collecting Info'
-                                : step === 'scheduling' ? 'Scheduling Tasting'
-                                    : step === 'done' ? 'Complete' : 'Menu Design'}
+                                : step === 'done' ? 'Complete' : 'Menu Design'}
                         </p>
                     </div>
                 </div>
