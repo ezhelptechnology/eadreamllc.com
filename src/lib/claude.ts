@@ -110,7 +110,7 @@ async function generateProteinDescriptions(proteins: string[], preparation: stri
 
     try {
         const message = await client.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-3-5-sonnet-20241022',
             max_tokens: 500,
             messages: [{
                 role: 'user',
@@ -142,7 +142,7 @@ async function generateSideDescriptions(sides: string): Promise<string> {
 
     try {
         const message = await client.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-3-5-sonnet-20241022',
             max_tokens: 300,
             messages: [{
                 role: 'user',

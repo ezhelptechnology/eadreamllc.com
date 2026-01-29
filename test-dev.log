@@ -1,0 +1,122 @@
+
+> eadreamsllc.com@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://172.20.10.2:3000
+- Environments: .env
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 4.8s
+ GET /admin/login?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fadmin%2Fdashboard 200 in 9.1s (compile: 2.5s, proxy.ts: 66ms, render: 6.5s)
+ GET /admin/login 200 in 9.3s (compile: 3.8s, proxy.ts: 25ms, render: 5.4s)
+ GET / 200 in 9.8s (compile: 5.4s, proxy.ts: 504ms, render: 3.9s)
+ GET /admin/login?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fadmin 200 in 9.3s (compile: 3.5s, proxy.ts: 70ms, render: 5.7s)
+○ Compiling /api/catering/submit ...
+ GET /admin/login 200 in 3.2s (compile: 62ms, proxy.ts: 88ms, render: 3.0s)
+ GET / 200 in 3.2s (compile: 664ms, proxy.ts: 78ms, render: 2.5s)
+ GET / 200 in 4.0s (compile: 26ms, proxy.ts: 191ms, render: 3.8s)
+ GET / 200 in 4.1s (compile: 506ms, proxy.ts: 262ms, render: 3.3s)
+ GET / 200 in 4.0s (compile: 409ms, proxy.ts: 125ms, render: 3.5s)
+ GET / 200 in 2.6s (compile: 87ms, proxy.ts: 274ms, render: 2.3s)
+Creating catering request in DB...
+Catering request created: cmkywb9ge00001on7fh2q6ync
+Generating personalized proposal with Claude...
+ GET /api/diag 200 in 2.9s (compile: 2.7s, render: 121ms)
+Proposal content generated.
+Creating proposal in DB...
+Twilio not configured - SMS will be logged only
+=== SMS WOULD BE SENT ===
+To: 555-0001
+Message:
+🎉 Thank you for choosing EA Dream LLC, Wedding!
+
+Your custom catering proposal has been sent to your email.
+
+📋 Event Summary:
+• Date: 2026-06-01
+• Guests: 100
+• Menu: Steak, Salmon
+
+📧 Check your email for your full personalized proposal (EA-FH2Q6YNC).
+
+Questions? Reply to this text or call us at (602) 318-4925.
+
+– Etheleen & Alma's Dream Team 🍽️
+========================
+[ERROR] CATERING_SUBMIT: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960f3426sm1708699d50.20 - gsmtp Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960f3426sm1708699d50.20 - gsmtp
+    at SMTPConnection._formatError (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15610:19)
+    at SMTPConnection._actionAUTHComplete (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:16240:34)
+    at SMTPConnection.<anonymous> (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15409:26)
+    at SMTPConnection._processResponse (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15751:20)
+    at SMTPConnection._onData (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15574:14)
+    at SMTPConnection._onSocketData (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15120:48)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)
+    at TLSWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+Error creating catering request: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960f3426sm1708699d50.20 - gsmtp
+    at ignore-listed frames {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960f3426sm1708699d50.20 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+ POST /api/catering/submit 500 in 72s (compile: 56s, render: 16.4s)
+Creating catering request in DB...
+Catering request created: cmkywbkgh00041on7kq9h6ykx
+Generating personalized proposal with Claude...
+Proposal content generated.
+Creating proposal in DB...
+Twilio not configured - SMS will be logged only
+=== SMS WOULD BE SENT ===
+To: 555-0002
+Message:
+🎉 Thank you for choosing EA Dream LLC, Corporate!
+
+Your custom catering proposal has been sent to your email.
+
+📋 Event Summary:
+• Date: 2026-04-15
+• Guests: 50
+• Menu: Chicken, Tofu
+
+📧 Check your email for your full personalized proposal (EA-KQ9H6YKX).
+
+Questions? Reply to this text or call us at (602) 318-4925.
+
+– Etheleen & Alma's Dream Team 🍽️
+========================
+[ERROR] CATERING_SUBMIT: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960efd95sm1754768d50.18 - gsmtp Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960efd95sm1754768d50.18 - gsmtp
+    at SMTPConnection._formatError (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15610:19)
+    at SMTPConnection._actionAUTHComplete (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:16240:34)
+    at SMTPConnection.<anonymous> (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15409:26)
+    at SMTPConnection._processResponse (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15751:20)
+    at SMTPConnection._onData (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15574:14)
+    at SMTPConnection._onSocketData (/Users/EzHelpTechnology/eadreamsllc.com/.next/dev/server/chunks/node_modules_nodemailer_f0e2e4c8._.js:15120:48)
+    at TLSSocket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)
+    at TLSWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+Error creating catering request: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960efd95sm1754768d50.18 - gsmtp
+    at ignore-listed frames {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 956f58d0204a3-649960efd95sm1754768d50.18 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+ POST /api/catering/submit 500 in 9.1s (compile: 15ms, render: 9.1s)

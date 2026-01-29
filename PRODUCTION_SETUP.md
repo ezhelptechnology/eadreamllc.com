@@ -20,7 +20,7 @@
 #### Update .env.production.local
 ```bash
 SMTP_USER="yourmeal@eadreamllc.com"
-SMTP_PASS="abcdefghijklmnop"  # Remove spaces from app password
+SMTP_PASS="YOUR_16_CHAR_APP_PASSWORD"  # Replace with actual app password
 ```
 
 #### Test SMTP Connection
