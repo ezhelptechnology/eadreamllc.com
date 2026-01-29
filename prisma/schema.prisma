@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// =============================================================================
+// AUTH MODELS
+// =============================================================================
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -34,16 +38,18 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String?   @unique
+  id            String     @id @default(cuid())
+  email         String?    @unique
   password      String?
   name          String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   emailVerified DateTime?
   image         String?
+  role          String     @default("USER")
   accounts      Account[]
   sessions      Session[]
+  adminLogs     AdminLog[]
 }
 
 model VerificationToken {
@@ -53,6 +59,10 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// =============================================================================
+// CATERING MODELS
+// =============================================================================
 
 model CateringRequest {
   id            String     @id @default(cuid())
@@ -75,16 +85,162 @@ model CateringRequest {
 }
 
 model Proposal {
-  id            String          @id @default(cuid())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  content       String
-  estimatedCost Float
-  version       Int             @default(1)
-  status        String          @default("DRAFT")
-  sentAt        DateTime?
-  requestId     String
-  request       CateringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  content          String    @db.Text
+  estimatedCost    Float
+  version          Int       @default(1)
+  status           ProposalStatus @default(DRAFT)
+  validationScore  Int?
+  
+  // Admin workflow
+  approvedBy       String?
+  approvedAt       DateTime?
+  sentAt           DateTime?
+  tastingScheduled Boolean   @default(false)
+  followUpSent     Boolean   @default(false)
+  
+  // Relationships
+  requestId        String
+  request          CateringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  contract         Contract?
+  calendarEvents   CalendarEvent[]
+  changeLogs       ChangeLog[]
+  tasks            Task[]
+}
+
+enum ProposalStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  SENT
+  MODIFIED
+  MODIFIED_PENDING_SEND
+  DENIED
+  CLIENT_APPROVED
+  CONTRACT_SIGNED
+}
+
+model Contract {
+  id                 String         @id @default(cuid())
+  contractNumber     String         @unique
+  proposalId         String         @unique
+  content            String         @db.Text
+  filepath           String?
+  status             ContractStatus @default(DRAFT)
+  generatedAt        DateTime       @default(now())
+  sentForSignature   DateTime?
+  signedByClient     DateTime?
+  signedByCompany    DateTime?
+  docusignEnvelopeId String?
+  signedAt           DateTime?
+  signedBy           String?
+  pdfUrl             String?
+  
+  proposal           Proposal       @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  SENT_FOR_SIGNATURE
+  PARTIALLY_SIGNED
+  FULLY_SIGNED
+  SIGNED
+  VOIDED
+  CANCELLED
+}
+
+model CalendarEvent {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  googleEventId String?   @unique
+  title         String
+  description   String?
+  startTime     DateTime
+  endTime       DateTime
+  location      String?
+  eventType     EventType
+  attendees     String[]
+  status        String    @default("ACTIVE")
+  proposalId    String
+  proposal      Proposal  @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+}
+
+enum EventType {
+  TASTING
+  MAIN_EVENT
+  EVENT_DAY
+  PREP
+  SHOPPING
+  FOLLOW_UP
+}
+
+model ChangeLog {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  proposalId String
+  changedBy  String
+  fieldName  String
+  oldValue   String?
+  newValue   String?
+  reason     String?
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  title       String
+  description String?
+  dueDate     DateTime
+  status      TaskStatus   @default(PENDING)
+  priority    TaskPriority @default(MEDIUM)
+  completedAt DateTime?
+  assignedTo  String?
+  proposalId  String
+  proposal    Proposal     @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model AdminLog {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  adminId    String
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  admin      User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model GoogleTokens {
+  id           String    @id @default(cuid())
+  service      String    // 'calendar', 'gmail', etc.
+  accessToken  String
+  refreshToken String
+  expiryDate   DateTime?
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model ErrorLog {

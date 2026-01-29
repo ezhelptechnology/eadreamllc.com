@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 EA Dream Admin System - Quick Start
 
-## Getting Started
-
-First, run the development server:
+## ONE-COMMAND DEPLOYMENT
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+./deploy.sh
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+That's it! The wizard will guide you through:
+- ✅ Gmail SMTP setup
+- ✅ Google OAuth configuration
+- ✅ Vercel deployment
+- ✅ Database migrations
+- ✅ Admin user creation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## MENU OPTIONS
 
-## Learn More
+**A.** Gmail SMTP Setup (10 min)  
+**B.** Google OAuth Setup (15 min)  
+**C.** Deploy to Vercel (15 min)  
+**D.** View ROI Analysis  
+**E.** Complete Setup (A → B → C)  
+**F.** Quick Local Test  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## INSTANT LOCAL TEST
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+./deploy.sh
+# Select: F (Quick Test)
+```
 
-## Deploy on Vercel
+Launches dev server with:
+- Admin login ready
+- Database connected
+- Test proposals loaded
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## PRODUCTION DEPLOYMENT
+
+```bash
+./deploy.sh
+# Select: E (Complete Setup)
+```
+
+Follow the interactive wizard. You'll need:
+1. Gmail account password (for app password)
+2. Google Cloud Console access (for OAuth)
+3. Vercel account (free tier works)
+
+**Time:** 40 minutes  
+**Cost:** $0 setup, $600/year operating  
+**ROI:** 187,633% first year
+
+See `docs/ROI_ANALYSIS.md` for details.
+
+---
+
+## INDIVIDUAL SCRIPTS
+
+```bash
+# Gmail only
+./scripts/setup-gmail.sh
+
+# Google OAuth only
+./scripts/setup-google-oauth.sh
+
+# Vercel deployment only
+./scripts/deploy-to-vercel.sh
+
+# Test SMTP
+node scripts/test-smtp.js
+
+# Generate secrets
+node scripts/generate-secrets.js
+```
+
+---
+
+## DOCUMENTATION
+
+| Document | Purpose |
+|----------|---------|
+| `PRODUCTION_SETUP.md` | Complete deployment guide |
+| `PRODUCTION_CHECKLIST.md` | Pre-launch checklist |
+| `docs/AGENT_2_PLAYBOOK.md` | System behavior guide |
+| `docs/QUICK_START_GUIDE.md` | 7-day roadmap |
+| `docs/ROI_ANALYSIS.md` | Financial analysis |
+
+---
+
+## SUPPORT
+
+**Admin Email:** yourmeal@eadreamllc.com  
+**Admin Password:** admin123 (CHANGE IMMEDIATELY)  
+**Dashboard:** https://eadreamllc.com/admin
+
+---
+
+**Version:** 1.0.0  
+**Last Updated:** January 28, 2026

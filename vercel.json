@@ -1,3 +1,39 @@
 {
-  "framework": "nextjs"
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "regions": ["iad1"],
+  "env": {
+    "NEXTAUTH_URL": "https://eadreamllc.com",
+    "NEXT_PUBLIC_APP_URL": "https://eadreamllc.com"
+  },
+  "build": {
+    "env": {
+      "PRISMA_GENERATE_DATAPROXY": "true"
+    }
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/admin/:path*",
+      "destination": "/admin/:path*"
+    }
+  ]
 }
