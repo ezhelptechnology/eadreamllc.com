@@ -121,20 +121,25 @@ export async function POST(request: NextRequest) {
         // Generate proposal ID for customer reference
         const proposalRef = `EA-${cateringRequest.id.slice(-8).toUpperCase()}`;
 
-        // Send SMS thank you with their submission summary
-        if (customerPhone && customerPhone.toLowerCase() !== 'skip') {
-            await sendThankYouSms({
-                customerName,
-                customerPhone,
-                eventDate: eventDate || 'TBD',
-                headcount: headcount || 50,
-                proteins,
-                proposalId: proposalRef
-            });
-        }
+        // Send notifications (errors here should not block the overall success)
+        try {
+            // Send SMS thank you with their submission summary
+            if (customerPhone && customerPhone.toLowerCase() !== 'skip') {
+                await sendThankYouSms({
+                    customerName,
+                    customerPhone,
+                    eventDate: eventDate || 'TBD',
+                    headcount: headcount || 50,
+                    proteins,
+                    proposalId: proposalRef
+                }).catch(e => console.error('SMS Failed:', e));
+            }
 
-        // Send emails (customer gets generic proposal, admin gets full report)
-        await sendEmails(cateringRequest, proposal, body, proposalRef);
+            // Send emails (customer gets generic proposal, admin gets full report)
+            await sendEmails(cateringRequest, proposal, body, proposalRef).catch(e => console.error('Email Failed:', e));
+        } catch (error) {
+            console.error('Notification error (non-blocking):', error);
+        }
 
         // Update request status
         await prisma.cateringRequest.update({
