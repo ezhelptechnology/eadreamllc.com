@@ -1,130 +1,151 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const Hero = () => {
+    const [hoveredPath, setHoveredPath] = useState<'private' | 'catering' | null>(null);
+
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden pt-36 pb-20 bg-background">
-            {/* Background Texture/Pattern - Subtle Noise for premium feel */}
+        <section className="relative min-h-screen flex flex-col pt-24 pb-0 bg-background overflow-hidden">
+            {/* Background Texture */}
             <div className="absolute inset-0 z-0 opacity-[0.4]" style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
             }}></div>
 
-            {/* Subtle Gradient Spots */}
-            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/3 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-[-10%] left-[-5%] w-[700px] h-[700px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-            <div className="container grid lg:grid-cols-2 gap-12 lg:gap-24 items-center relative z-10">
-                {/* Left Content */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+            {/* Header Question */}
+            <div className="relative z-20 text-center pt-8 md:pt-16 pb-8 px-4">
+                <motion.h1
+                    initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col space-y-10 text-center lg:text-left items-center lg:items-start"
+                    transition={{ duration: 0.8 }}
+                    className="text-3xl md:text-5xl lg:text-6xl font-serif text-primary mb-4"
                 >
-                    {/* Main Heading */}
-                    <div className="relative">
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.1, duration: 0.8 }}
-                            className="text-sm uppercase tracking-[0.3em] text-accent font-bold mb-4"
-                        >
-                            Special Events • Corporate Events • Private Parties
-                        </motion.p>
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2, duration: 1 }}
-                            className="text-5xl md:text-6xl lg:text-7xl font-serif text-primary leading-[0.95]"
-                        >
-                            A Family Legacy, <br />
-                            <span className="italic text-accent font-light">Now Serving Charlotte</span>
-                        </motion.h1>
-                        <motion.div
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            transition={{ delay: 0.8, duration: 1, ease: "circOut" }}
-                            className="h-[1px] w-24 bg-accent/50 mt-8 mx-auto lg:mx-0"
-                        ></motion.div>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5, duration: 1 }}
-                            className="text-lg md:text-xl text-foreground/60 mt-8 max-w-lg leading-relaxed font-sans font-light tracking-wide"
-                        >
-                            Etheleen and Alma spent decades perfecting recipes that brought our family together. Now we&apos;re sharing that love with yours—one unforgettable event at a time.
-                        </motion.p>
-                    </div>
+                    What brings you here today?
+                </motion.h1>
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="text-foreground/70 font-sans tracking-widest uppercase text-sm font-medium"
+                >
+                    Choose Your Experience
+                </motion.p>
+            </div>
 
-                    {/* CTAs */}
-                    <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto pt-4">
-                        <button
-                            onClick={() => {
-                                const bot = document.querySelector('[data-floating-bot]') as HTMLButtonElement;
-                                if (bot) bot.click();
-                            }}
-                            className="btn-primary flex items-center justify-center gap-3 shadow-2xl hover:shadow-primary/20 tracking-[0.2em] text-sm py-5 px-10"
-                        >
-                            Get Your Free Quote
-                        </button>
-                        <button
-                            onClick={() => {
-                                const menuSection = document.getElementById('menu');
-                                if (menuSection) {
-                                    menuSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }
-                            }}
-                            className="text-sm px-10 py-5 border border-primary/20 font-sans font-medium uppercase tracking-[0.2em] hover:bg-primary/5 hover:border-primary text-primary transition-all duration-500 text-center"
-                        >
-                            Explore Our Menus
-                        </button>
-                    </div>
+            {/* Split Screen Container */}
+            <div className="relative z-10 flex-1 flex flex-col lg:flex-row w-full max-w-[1800px] mx-auto overflow-hidden">
 
-                    {/* Founding Client Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1, duration: 0.8 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/20 rounded-full"
-                    >
-                        <span className="text-xs font-bold text-accent uppercase tracking-wider">✨ Founding client rates available through 2026</span>
-                    </motion.div>
-
-
-                </motion.div>
-
-                {/* Right Image Grid - User Images */}
+                {/* Private Dinner Path */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-                    className="relative h-[600px] lg:h-[750px] w-full"
+                    onMouseEnter={() => setHoveredPath('private')}
+                    onMouseLeave={() => setHoveredPath(null)}
+                    className={`relative flex-1 flex flex-col justify-end p-8 md:p-16 lg:p-24 border-b lg:border-b-0 lg:border-r border-primary/20 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden group min-h-[50vh] lg:min-h-0 ${hoveredPath === 'private' ? 'lg:flex-[1.2]' : hoveredPath === 'catering' ? 'lg:flex-[0.8] opacity-80' : 'flex-1'}`}
                 >
-                    {/* Main Image Layer (Salmon Steak) */}
-                    <div className="absolute top-0 right-0 lg:right-5 w-[85%] h-[75%] bg-zinc-100 rounded-tr-[120px] rounded-bl-[120px] overflow-hidden shadow-2xl z-10 hover-scale-img group border border-white/50">
-                        <div className="absolute inset-0 bg-primary/5 z-10 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-0"></div>
-                        <Image
-                            src="/food-salmon-main.jpg"
-                            alt="Gourmet Salmon Dish"
-                            fill
-                            className="object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
-                            priority
-                        />
-                    </div>
+                    {/* Dark/Moody Background for Private */}
+                    <div className="absolute inset-0 bg-[#1A1A1A] z-0"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
 
-                    {/* Secondary Image Layer (Appetizers) */}
-                    <div className="absolute bottom-10 left-0 lg:left-0 w-[60%] h-[45%] bg-zinc-50 rounded-tl-[80px] rounded-br-[80px] overflow-hidden shadow-2xl z-20 border-8 border-background hover-scale-img group">
-                        <Image
-                            src="/food-appetizers.jpg"
-                            alt="Elegant Appetizers"
-                            fill
-                            className="object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
-                        />
+                    {/* Background Image - Private */}
+                    <Image
+                        src="/food-salmon-main.jpg"
+                        alt="Intimate Private Dinner Setting"
+                        fill
+                        className="object-cover opacity-30 group-hover:opacity-50 group-hover:scale-105 transition-all duration-[2s] ease-out z-0"
+                    />
+
+                    <div className="relative z-20 text-white flex flex-col h-full justify-end">
+                        <div className="mb-auto">
+                            <span className="inline-block px-3 py-1 mb-6 border border-white/30 rounded-full text-xs tracking-widest uppercase font-bold text-white/90 backdrop-blur-sm">
+                                🕯️ Intimate & Exclusive
+                            </span>
+                        </div>
+
+                        <div className="space-y-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h2 className="text-4xl md:text-5xl font-serif text-white tracking-wide drop-shadow-lg">
+                                Private Dinner Events
+                            </h2>
+                            <div className="h-px w-16 bg-white/50 group-hover:w-32 transition-all duration-700"></div>
+                            <p className="font-sans font-light text-white/80 text-lg md:text-xl max-w-md leading-relaxed">
+                                Chef-hosted, bespoke tasting menus for small gatherings (10-40 guests). A luxurious culinary journey tailored perfectly to you.
+                            </p>
+
+                            <ul className="space-y-2 font-sans text-sm text-white/70">
+                                <li className="flex items-center gap-2"><span className="text-accent">✧</span> $1,000 per group of 8 guests</li>
+                                <li className="flex items-center gap-2"><span className="text-accent">✧</span> Custom menu consultation required</li>
+                                <li className="flex items-center gap-2"><span className="text-accent">✧</span> Limited dates available</li>
+                            </ul>
+
+                            <div className="pt-4">
+                                <a
+                                    href="https://calendly.com/eadreamllc"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center bg-white text-black hover:bg-white/90 px-8 py-4 font-sans uppercase tracking-[0.2em] text-sm transition-colors duration-300 w-full sm:w-auto text-center font-bold"
+                                >
+                                    Reserve Your Evening
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </motion.div>
+
+                {/* Catering Path */}
+                <motion.div
+                    onMouseEnter={() => setHoveredPath('catering')}
+                    onMouseLeave={() => setHoveredPath(null)}
+                    className={`relative flex-1 flex flex-col justify-end p-8 md:p-16 lg:p-24 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden group min-h-[50vh] lg:min-h-0 ${hoveredPath === 'catering' ? 'lg:flex-[1.2]' : hoveredPath === 'private' ? 'lg:flex-[0.8] opacity-80' : 'flex-1'}`}
+                >
+                    {/* Warm/Light Background for Catering */}
+                    <div className="absolute inset-0 bg-[#Fdfbf7] z-0"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 z-10"></div>
+
+                    {/* Background Image - Catering */}
+                    <Image
+                        src="/food-appetizers.jpg"
+                        alt="Professional Catering Spread"
+                        fill
+                        className="object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-[2s] ease-out z-0"
+                    />
+
+                    <div className="relative z-20 text-white flex flex-col h-full justify-end">
+                        <div className="mb-auto">
+                            <span className="inline-block px-3 py-1 mb-6 border border-white/40 rounded-full text-xs tracking-widest uppercase font-bold text-white shadow-sm backdrop-blur-sm bg-black/20">
+                                🍱 Professional & Scalable
+                            </span>
+                        </div>
+
+                        <div className="space-y-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h2 className="text-4xl md:text-5xl font-serif text-white tracking-wide drop-shadow-lg">
+                                Event Catering
+                            </h2>
+                            <div className="h-px w-16 bg-white/50 group-hover:w-32 transition-all duration-700"></div>
+                            <p className="font-sans font-light text-white/90 text-lg md:text-xl max-w-md leading-relaxed drop-shadow-md">
+                                Reliable, warm, and professional catering for corporate setups, weddings, and large events with beautiful food stations.
+                            </p>
+
+                            <ul className="space-y-2 font-sans text-sm text-white/90 drop-shadow-sm font-medium">
+                                <li className="flex items-center gap-2"><span className="text-secondary opacity-90 text-[10px]">⬤</span> Classic ($25) & Premium ($30) per plate</li>
+                                <li className="flex items-center gap-2"><span className="text-secondary opacity-90 text-[10px]">⬤</span> Licensed & insured</li>
+                                <li className="flex items-center gap-2"><span className="text-secondary opacity-90 text-[10px]">⬤</span> Same-day response and quote</li>
+                            </ul>
+
+                            <div className="pt-4">
+                                <button
+                                    onClick={() => {
+                                        const bot = document.querySelector('[data-floating-bot]') as HTMLButtonElement;
+                                        if (bot) bot.click();
+                                    }}
+                                    className="inline-flex items-center justify-center bg-primary text-white hover:bg-primary/90 px-8 py-4 font-sans uppercase tracking-[0.2em] text-sm transition-colors duration-300 w-full sm:w-auto shadow-xl"
+                                >
+                                    Get a Free Quote
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
             </div>
         </section>
     );

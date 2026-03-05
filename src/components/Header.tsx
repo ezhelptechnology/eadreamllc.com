@@ -57,13 +57,13 @@ const Header = () => {
           </div>
         </Link>
 
-        {/* 2. Navigation (Center - Absolute centered) */}
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        {/* 2. Navigation (Center) */}
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-8 px-4">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className="text-[13px] font-bold uppercase tracking-[0.15em] text-foreground/80 hover:text-primary transition-all relative group"
+              className="text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.15em] text-foreground/80 hover:text-primary transition-all relative group whitespace-nowrap"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>

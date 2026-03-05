@@ -121,12 +121,6 @@ const Footer = () => {
                                 </div>
                                 <span className="text-xs font-semibold uppercase tracking-wider text-white/80 transition-colors">Licensed & Insured</span>
                             </div>
-                            <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3 group hover:border-accent/30 transition-colors">
-                                <div className="p-2 rounded-lg bg-accent/20 text-accent">
-                                    <ChefHat size={20} />
-                                </div>
-                                <span className="text-xs font-semibold uppercase tracking-wider text-white/80 transition-colors">ServSafe Certified</span>
-                            </div>
                         </div>
                     </div>
                 </div>

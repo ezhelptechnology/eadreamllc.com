@@ -9,7 +9,7 @@ const FloatingExperienceBot = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="fixed bottom-8 right-8 z-[100]">
+        <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100]">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
