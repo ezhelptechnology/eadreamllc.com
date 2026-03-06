@@ -37,21 +37,21 @@ const Header = () => {
     >
       <div className="container flex items-center justify-between h-full relative">
         {/* 1. Logo Section (Left) */}
-        <Link href="/" className="flex items-center gap-3 relative z-10">
-          <div className="relative w-12 h-12 md:w-14 md:h-14">
+        <Link href="/" className="flex items-center gap-4 relative z-10 group">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-white rounded-full p-2.5 shadow-xl shadow-primary/10 border border-primary/5 group-hover:scale-110 transition-transform duration-500">
             <Image
               src="/logo.png"
               alt="Etheleen & Alma's Dream Logo"
               fill
-              className="object-contain"
+              className="object-contain p-1"
               priority
             />
           </div>
           <div className="hidden lg:flex flex-col">
-            <span className="text-xl font-bold font-serif leading-none tracking-tight text-primary">
+            <span className="text-xl xl:text-2xl font-bold font-serif leading-tight tracking-tight text-primary">
               Etheleen &amp; Alma&apos;s
             </span>
-            <span className="text-sm font-medium tracking-[0.2em] text-accent uppercase">
+            <span className="text-xs xl:text-sm font-bold tracking-[0.3em] text-accent uppercase opacity-90">
               Dream, LLC
             </span>
           </div>
