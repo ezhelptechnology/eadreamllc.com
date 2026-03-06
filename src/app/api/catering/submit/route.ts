@@ -75,10 +75,24 @@ export async function POST(request: NextRequest) {
                 status: 'PENDING',
             },
         });
-        console.log('Lead captured in DB:', cateringRequest.id);
-
         // 2. GENERATE PROPOSAL (TRY AI, BUT FALLBACK IF FAILED)
         let proposalContent: string;
+
+        const customerInfo: CustomerInfo = {
+            customerName,
+            customerEmail,
+            customerPhone: customerPhone || '',
+            eventDate: eventDate || 'TBD',
+            eventLocation: eventLocation || 'TBD',
+            eventType: effectiveEventType,
+            headcount: headcount || (isPrivateRequest ? 8 : 50),
+            proteins: Array.isArray(proteins) ? proteins : [proteins],
+            preparation: preparation || 'Chef\'s Choice',
+            sides: sides || 'Chef\'s Selection',
+            bread: bread || 'Artisan Rolls',
+            allergies: allergies || 'None'
+        };
+
         try {
             console.log('Generating AI proposal...');
             proposalContent = await generatePersonalizedProposal(customerInfo);
