@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             preparation,
             sides,
             bread,
-            allergies
+            allergies,
             isPrivateRequest
         } = body;
 

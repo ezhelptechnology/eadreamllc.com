@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { callGrok } from './grok';
 
 // Claude client - primary and only AI provider
 const getClaudeClient = (): Anthropic | null => {
@@ -104,62 +105,85 @@ function calculatePricing(info: CustomerInfo) {
 // Generate detailed protein descriptions using Claude
 async function generateProteinDescriptions(proteins: string[], preparation: string): Promise<string> {
     const client = getClaudeClient();
-    if (!client) {
-        return proteins.map(p => `**${p}:** Expertly prepared ${preparation.toLowerCase()} style with our signature seasoning blend.`).join('\n');
-    }
-
-    try {
-        const message = await client.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 500,
-            messages: [{
-                role: 'user',
-                content: `Write a luxurious, mouth-watering description for each protein prepared in "${preparation}" style. Keep each description to 2 sentences max. Format as bullet points.
+    const prompt = `Write a luxurious, mouth-watering description for each protein prepared in "${preparation}" style. Keep each description to 2 sentences max. Format as bullet points.
 
 Proteins: ${proteins.join(', ')}
 
 Example format:
 - **Beef:** [description]
-- **Chicken:** [description]`
-            }]
-        });
+- **Chicken:** [description]`;
 
-        const textBlock = message.content.find(block => block.type === 'text');
-        return textBlock?.text || proteins.map(p => `**${p}:** Expertly prepared ${preparation.toLowerCase()} style with our signature seasoning blend.`).join('\n');
-    } catch {
-        return proteins.map(p => `**${p}:** Expertly prepared ${preparation.toLowerCase()} style with our signature seasoning blend.`).join('\n');
+    if (client) {
+        try {
+            const message = await client.messages.create({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 500,
+                messages: [{
+                    role: 'user',
+                    content: prompt
+                }]
+            });
+
+            const textBlock = message.content.find(block => block.type === 'text');
+            if (textBlock?.text) return textBlock.text;
+        } catch (error) {
+            console.warn('Claude protein generation failed, falling back to Grok:', error);
+        }
     }
+
+    // Try Grok Fallback
+    const grokResponse = await callGrok([
+        { role: 'system', content: 'You are an expert culinary writer for Etheleen & Alma\'s Dream.' },
+        { role: 'user', content: prompt }
+    ]);
+
+    if (grokResponse) return grokResponse;
+
+    // Hardcoded fallback
+    return proteins.map(p => `**${p}:** Expertly prepared ${preparation.toLowerCase()} style with our signature seasoning blend.`).join('\n');
 }
 
 // Generate side dish descriptions
 async function generateSideDescriptions(sides: string): Promise<string> {
     const client = getClaudeClient();
     const sidesList = sides.split(',').map(s => s.trim()).filter(Boolean);
-
-    if (!client || sidesList.length === 0) {
-        return sidesList.map(s => `**${s}:** Chef's special preparation with premium ingredients.`).join('\n');
-    }
-
-    try {
-        const message = await client.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 300,
-            messages: [{
-                role: 'user',
-                content: `Write elegant descriptions for these side dishes. Keep each to 1-2 sentences. Format as bullet points.
+    const prompt = `Write elegant descriptions for these side dishes. Keep each to 1-2 sentences. Format as bullet points.
 
 Sides: ${sides}
 
 Example:
-- **Green Beans:** [description]`
-            }]
-        });
+- **Green Beans:** [description]`;
 
-        const textBlock = message.content.find(block => block.type === 'text');
-        return textBlock?.text || sidesList.map(s => `**${s}:** Chef's special preparation with premium ingredients.`).join('\n');
-    } catch {
-        return sidesList.map(s => `**${s}:** Chef's special preparation with premium ingredients.`).join('\n');
+    if (client && sidesList.length > 0) {
+        try {
+            const message = await client.messages.create({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 300,
+                messages: [{
+                    role: 'user',
+                    content: prompt
+                }]
+            });
+
+            const textBlock = message.content.find(block => block.type === 'text');
+            if (textBlock?.text) return textBlock.text;
+        } catch (error) {
+            console.warn('Claude side generation failed, falling back to Grok:', error);
+        }
     }
+
+    // Try Grok Fallback
+    if (sidesList.length > 0) {
+        const grokResponse = await callGrok([
+            { role: 'system', content: 'You are an expert culinary writer for Etheleen & Alma\'s Dream.' },
+            { role: 'user', content: prompt }
+        ]);
+
+        if (grokResponse) return grokResponse;
+    }
+
+    // Hardcoded fallback
+    return sidesList.map(s => `**${s}:** Chef's special preparation with premium ingredients.`).join('\n');
 }
 
 // Generate bread description
