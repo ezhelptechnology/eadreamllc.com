@@ -78,14 +78,17 @@ const Hero = () => {
                             </ul>
 
                             <div className="pt-4">
-                                <a
-                                    href="https://calendly.com/eadreamllc"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center bg-white text-black hover:bg-white/90 px-8 py-4 font-sans uppercase tracking-[0.2em] text-sm transition-colors duration-300 w-full sm:w-auto text-center font-bold"
+                                <button
+                                    onClick={() => {
+                                        const event = new CustomEvent('eadream:open-agent', {
+                                            detail: { mode: 'private' }
+                                        });
+                                        window.dispatchEvent(event);
+                                    }}
+                                    className="inline-flex items-center justify-center bg-white text-black hover:bg-white/90 px-8 py-4 font-sans uppercase tracking-[0.2em] text-sm transition-colors duration-300 w-full sm:w-auto text-center font-bold shadow-xl"
                                 >
                                     Reserve Your Evening
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -134,14 +137,17 @@ const Hero = () => {
                             <div className="pt-4">
                                 <button
                                     onClick={() => {
-                                        const bot = document.querySelector('[data-floating-bot]') as HTMLButtonElement;
-                                        if (bot) bot.click();
+                                        const event = new CustomEvent('eadream:open-agent', {
+                                            detail: { mode: 'catering' }
+                                        });
+                                        window.dispatchEvent(event);
                                     }}
                                     className="inline-flex items-center justify-center bg-primary text-white hover:bg-primary/90 px-8 py-4 font-sans uppercase tracking-[0.2em] text-sm transition-colors duration-300 w-full sm:w-auto shadow-xl"
                                 >
                                     Get a Free Quote
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 </motion.div>

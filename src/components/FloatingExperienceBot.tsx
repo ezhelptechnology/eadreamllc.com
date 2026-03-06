@@ -1,12 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DishSelector from './DishSelector';
 
 const FloatingExperienceBot = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [mode, setMode] = useState<'catering' | 'private'>('catering');
+
+    useEffect(() => {
+        const handleOpenAgent = (e: any) => {
+            const requestedMode = e.detail?.mode || 'catering';
+            setMode(requestedMode);
+            setIsOpen(true);
+        };
+
+        window.addEventListener('eadream:open-agent' as any, handleOpenAgent);
+        return () => window.removeEventListener('eadream:open-agent' as any, handleOpenAgent);
+    }, []);
 
     return (
         <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100]">
@@ -25,7 +37,7 @@ const FloatingExperienceBot = () => {
                             <X size={16} />
                         </button>
                         <div className="overflow-hidden rounded-3xl border border-primary/10">
-                            <DishSelector />
+                            <DishSelector mode={mode} />
                         </div>
                     </motion.div>
                 )}
@@ -34,7 +46,10 @@ const FloatingExperienceBot = () => {
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    if (!isOpen) setMode('catering'); // Default to catering when manual clicking
+                    setIsOpen(!isOpen);
+                }}
                 data-floating-bot
                 className="bg-primary hover:bg-accent text-white p-4 rounded-full shadow-2xl flex items-center gap-3 transition-colors group"
             >
@@ -44,7 +59,7 @@ const FloatingExperienceBot = () => {
                 </div>
                 {!isOpen && (
                     <span className="font-bold text-sm tracking-widest uppercase pr-2">
-                        Build My Menu
+                        {isOpen ? 'Close' : 'Build My Menu'}
                     </span>
                 )}
             </motion.button>
@@ -53,3 +68,4 @@ const FloatingExperienceBot = () => {
 };
 
 export default FloatingExperienceBot;
+

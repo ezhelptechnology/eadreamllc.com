@@ -47,12 +47,15 @@ export async function POST(request: NextRequest) {
             sides,
             bread,
             allergies
+            isPrivateRequest
         } = body;
 
         // Validate required fields
         if (!customerName || !customerEmail || !proteins || proteins.length === 0) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
+
+        const effectiveEventType = isPrivateRequest ? 'Private Dinner' : (eventType || 'Catering');
 
         // Create the catering request
         console.log('Creating catering request in DB...');
@@ -63,8 +66,8 @@ export async function POST(request: NextRequest) {
                 customerPhone: customerPhone || null,
                 eventDate: eventDate || null,
                 eventLocation: eventLocation || null,
-                eventType: eventType || null,
-                headcount: headcount || 50,
+                eventType: effectiveEventType,
+                headcount: headcount || (isPrivateRequest ? 8 : 50),
                 proteins: JSON.stringify(proteins),
                 preparation: preparation || null,
                 sides: sides || null,
@@ -82,8 +85,8 @@ export async function POST(request: NextRequest) {
             customerPhone: customerPhone || '',
             eventDate: eventDate || 'TBD',
             eventLocation: eventLocation || 'TBD',
-            eventType: eventType || '',
-            headcount: headcount || 50,
+            eventType: effectiveEventType,
+            headcount: headcount || (isPrivateRequest ? 8 : 50),
             proteins,
             preparation: preparation || 'Chef\'s Choice',
             sides: sides || 'Chef\'s Selection',
@@ -97,14 +100,25 @@ export async function POST(request: NextRequest) {
         console.log('Proposal content generated.');
 
         // Calculate estimated cost
-        const hasSteak = proteins.some((p: string) => p.toLowerCase().includes('steak'));
-        const hasSeafood = proteins.some((p: string) =>
-            p.toLowerCase().includes('seafood') ||
-            p.toLowerCase().includes('fish') ||
-            p.toLowerCase().includes('shrimp')
-        );
-        const rate = (hasSteak || hasSeafood) ? 30 : 25;
-        const estimatedCost = rate * (headcount || 50);
+        let estimatedCost: number;
+        let rate: number;
+
+        if (isPrivateRequest) {
+            // Private Dinner: $1,000 per group of 8 guests
+            const groups = Math.ceil((headcount || 8) / 8);
+            estimatedCost = groups * 1000;
+            rate = estimatedCost / (headcount || 8);
+        } else {
+            // Catering: per plate pricing
+            const hasSteak = proteins.some((p: string) => p.toLowerCase().includes('steak'));
+            const hasSeafood = proteins.some((p: string) =>
+                p.toLowerCase().includes('seafood') ||
+                p.toLowerCase().includes('fish') ||
+                p.toLowerCase().includes('shrimp')
+            );
+            rate = (hasSteak || hasSeafood) ? 30 : 25;
+            estimatedCost = rate * (headcount || 50);
+        }
 
         // Create the proposal in DB (status: DRAFT - pending admin approval)
         console.log('Creating proposal in DB...');

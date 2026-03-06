@@ -13,11 +13,21 @@ interface Message {
 
 type Step = 'name' | 'email' | 'phone' | 'eventDate' | 'headcount' | 'eventType' | 'sliders' | 'preparation' | 'sides' | 'bread' | 'allergies' | 'submitting' | 'done';
 
-const DishSelector = () => {
+type Mode = 'catering' | 'private';
+
+interface DishSelectorProps {
+    mode?: Mode;
+}
+
+const DishSelector = ({ mode = 'catering' }: DishSelectorProps) => {
+    const isPrivate = mode === 'private';
+
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: "Welcome to Etheleen & Alma's Dream! I'm your personal Experience Creator. Let's design a custom catering proposal for your event. First, what's your name?",
+            text: isPrivate
+                ? "Welcome to Etheleen & Alma's Dream. I'm your Culinary Concierge. Let's design an intimate, bespoke dining experience for your private event. First, what's your name?"
+                : "Welcome to Etheleen & Alma's Dream! I'm your personal Experience Creator. Let's design a custom catering proposal for your event. First, what's your name?",
             sender: 'bot',
             timestamp: new Date(),
         }
@@ -29,8 +39,8 @@ const DishSelector = () => {
         email: '',
         phone: '',
         eventDate: '',
-        headcount: 50,
-        eventType: '',
+        headcount: isPrivate ? 8 : 50,
+        eventType: isPrivate ? 'Private Dinner' : '',
     });
     const [selections, setSelections] = useState({
         proteins: [] as string[],
@@ -101,14 +111,22 @@ const DishSelector = () => {
                 case 'eventDate':
                     setCustomerInfo(prev => ({ ...prev, eventDate: currentInput }));
                     setStep('headcount');
-                    botResponse = `Excellent! How many guests?`;
+                    botResponse = isPrivate
+                        ? `Excellent! How many guests are you hosting? (Private dinners are ideal for 10-40 guests)`
+                        : `Excellent! How many guests?`;
                     break;
 
                 case 'headcount':
-                    const headcount = parseInt(currentInput) || 50;
+                    const headcount = parseInt(currentInput) || (isPrivate ? 8 : 50);
                     setCustomerInfo(prev => ({ ...prev, headcount }));
-                    setStep('eventType');
-                    botResponse = `Perfect! Planning for ${headcount} guests. 🎉\n\nWhat type of event is this?\n(e.g., Wedding, Corporate Event, Birthday Party, Family Reunion, Church Event, Other)`;
+
+                    if (isPrivate) {
+                        setStep('sliders');
+                        botResponse = `Perfect! Designing for ${headcount} guests. 🕯️\n\nPrivate Dinner menus are bespoke. Let's start with your PROTEIN selections (Choose up to 3).\n\nWhat's your FIRST protein? (e.g., Filet Mignon, Sea Bass, Rack of Lamb)`;
+                    } else {
+                        setStep('eventType');
+                        botResponse = `Perfect! Planning for ${headcount} guests. 🎉\n\nWhat type of event is this?\n(e.g., Wedding, Corporate Event, Birthday Party, Family Reunion, Church Event, Other)`;
+                    }
                     break;
 
                 case 'eventType':
@@ -122,7 +140,14 @@ const DishSelector = () => {
                     setSelections(prev => ({ ...prev, proteins: newProteins }));
                     if (newProteins.length < 3) {
                         const ordinal = newProteins.length === 1 ? 'SECOND' : 'THIRD';
-                        botResponse = `Great! What's your ${ordinal} protein? (ONE choice only)`;
+                        botResponse = `Great! What's your ${ordinal} protein? (Or type "that's all")`;
+
+                        if (currentInput.toLowerCase() === "that's all") {
+                            const finalProteins = newProteins.filter(p => p.toLowerCase() !== "that's all");
+                            setSelections(prev => ({ ...prev, proteins: finalProteins }));
+                            setStep('preparation');
+                            botResponse = `Excellent choice! How should we prepare these? (e.g., Grilled, BBQ, Herb-Crusted)`;
+                        }
                     } else {
                         setStep('preparation');
                         botResponse = `Excellent: ${newProteins.join(', ')}!\n\nHow should we prepare these? (e.g., Grilled, BBQ, Herb-Crusted)`;
@@ -132,7 +157,9 @@ const DishSelector = () => {
                 case 'preparation':
                     setSelections(prev => ({ ...prev, preparation: currentInput }));
                     setStep('sides');
-                    botResponse = `Delicious! Choose 2 sides:\nGreen Beans, Brussels Sprouts, Rice, Lentils, Mac & Cheese, Cole Slaw`;
+                    botResponse = isPrivate
+                        ? `Delicious! Which sides or accompaniments would you like?`
+                        : `Delicious! Choose 2 sides:\nGreen Beans, Brussels Sprouts, Rice, Lentils, Mac & Cheese, Cole Slaw`;
                     break;
 
                 case 'sides':
@@ -168,11 +195,12 @@ const DishSelector = () => {
                                 sides: selections.sides,
                                 bread: selections.bread,
                                 allergies,
+                                isPrivateRequest: isPrivate // Flag for API to use different pricing
                             }),
                         });
 
                         if (response.ok) {
-                            botResponse = `🎉 Proposal Sent, ${customerInfo.name}!\n\nYour custom proposal has been sent to ${customerInfo.email}.\n\nOur team will review your request and be in touch shortly to discuss next steps and answer any questions you may have.\n\nThank you for choosing Etheleen & Alma's Dream!`;
+                            botResponse = `🎉 Proposal Sent, ${customerInfo.name}!\n\nYour custom ${isPrivate ? 'private dinner' : 'catering'} proposal has been sent to ${customerInfo.email}.\n\nOur team will review your request and be in touch shortly to discuss next steps.\n\nThank you for choosing Etheleen & Alma's Dream!`;
                             setStep('done');
                             setIsDone(true);
                         } else {
@@ -193,7 +221,7 @@ const DishSelector = () => {
             addBotMessage(botResponse);
             setIsSubmitting(false);
         }, 250); // Optimized from 600ms to 250ms
-    }, [input, isSubmitting, isDone, step, customerInfo, selections, addBotMessage]);
+    }, [input, isSubmitting, isDone, step, customerInfo, selections, addBotMessage, isPrivate]);
 
     const resetChat = useCallback(() => {
         setMessages([{
@@ -202,11 +230,18 @@ const DishSelector = () => {
             sender: 'bot',
             timestamp: new Date(),
         }]);
-        setCustomerInfo({ name: '', email: '', phone: '', eventDate: '', headcount: 50, eventType: '' });
+        setCustomerInfo({
+            name: '',
+            email: '',
+            phone: '',
+            eventDate: '',
+            headcount: isPrivate ? 8 : 50,
+            eventType: isPrivate ? 'Private Dinner' : ''
+        });
         setSelections({ proteins: [], preparation: '', sides: '', bread: '', allergies: '' });
         setStep('name');
         setIsDone(false);
-    }, []);
+    }, [isPrivate]);
 
     const getPlaceholder = () => {
         switch (step) {
@@ -214,11 +249,11 @@ const DishSelector = () => {
             case 'email': return "your@email.com";
             case 'phone': return "555-123-4567 or skip";
             case 'eventDate': return "March 15, 2026";
-            case 'headcount': return "50";
+            case 'headcount': return isPrivate ? "8" : "50";
             case 'eventType': return "Wedding, Corporate, Birthday...";
-            case 'sliders': return "ONE protein only (e.g. Beef)";
+            case 'sliders': return isPrivate ? "e.g. Rack of Lamb" : "ONE protein only (e.g. Beef)";
             case 'preparation': return "e.g. Grilled";
-            case 'sides': return "e.g. Rice, Green Beans";
+            case 'sides': return isPrivate ? "e.g. Saffron Rice" : "e.g. Rice, Green Beans";
             case 'bread': return "Rolls, Biscuits, or Toast";
             case 'allergies': return "none or list allergies";
             case 'done': return "Type your question...";
@@ -246,7 +281,9 @@ const DishSelector = () => {
                         {getStepIcon()}
                     </div>
                     <div>
-                        <h3 className="font-serif font-bold text-base tracking-wide">Experience Creator</h3>
+                        <h3 className="font-serif font-bold text-base tracking-wide">
+                            {isPrivate ? 'Culinary Concierge' : 'Experience Creator'}
+                        </h3>
                         <p className="text-[11px] font-medium opacity-80 uppercase tracking-widest text-accent">
                             {step === 'name' || step === 'email' || step === 'phone' || step === 'eventDate' || step === 'headcount'
                                 ? 'Collecting Info'
@@ -254,6 +291,7 @@ const DishSelector = () => {
                         </p>
                     </div>
                 </div>
+
                 {!isDone && selections.proteins.length > 0 && step === 'sliders' && (
                     <div className="text-xs font-bold bg-white/15 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/10">
                         {selections.proteins.length}/3 Proteins
