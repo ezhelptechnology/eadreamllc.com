@@ -26,7 +26,7 @@
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "next-auth": "^5.0.0-beta.30",
-    "nodemailer": "^7.0.13",
+    "nodemailer": "^6.9.16",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.9.1",
@@ -56,8 +56,5 @@
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  },
-  "overrides": {
-    "nodemailer": "^7.0.13"
   }
 }
