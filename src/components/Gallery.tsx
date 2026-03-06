@@ -9,7 +9,7 @@ const galleryImages = [
     { src: '/food-salmon-main.jpg', alt: 'Gourmet Salmon Plating', span: 'md:col-span-2 md:row-span-2' },
     { src: '/food-appetizers.jpg', alt: 'Elegant Appetizer Spread', span: '' },
     { src: '/food-steak.jpg', alt: 'Premium Steak Course', span: '' },
-    { src: '/chef-plating.png', alt: 'Chef Plating in Action', span: 'md:col-span-2' },
+    { src: '/food-lamb-chops.jpg', alt: 'Signature Lamb Chops', span: 'md:col-span-2' },
     { src: '/food-ribs.jpg', alt: 'Southern BBQ Ribs', span: '' },
     { src: '/food-pork-tenderloin.jpg', alt: 'Pork Tenderloin', span: '' },
     { src: '/event-setup.png', alt: 'Event Table Setup', span: 'md:col-span-2' },
