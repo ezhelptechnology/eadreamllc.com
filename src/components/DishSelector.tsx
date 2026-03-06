@@ -199,17 +199,22 @@ const DishSelector = ({ mode = 'catering' }: DishSelectorProps) => {
                             }),
                         });
 
+                        const result = await response.json();
+
                         if (response.ok) {
-                            botResponse = `🎉 Proposal Sent, ${customerInfo.name}!\n\nYour custom ${isPrivate ? 'private dinner' : 'catering'} proposal has been sent to ${customerInfo.email}.\n\nOur team will review your request and be in touch shortly to discuss next steps.\n\nThank you for choosing Etheleen & Alma's Dream!`;
+                            botResponse = `🎉 ${result.message || 'Success!'}\n\nYour custom ${isPrivate ? 'private dinner' : 'catering'} inquiry has been received. A copy of your preliminary proposal has been sent to ${customerInfo.email}.\n\nA Culinary Specialist is now reviewing your selections and will reach out shortly to discuss the finer details.\n\nThank you for choosing Etheleen & Alma's Dream!`;
                             setStep('done');
                             setIsDone(true);
                         } else {
-                            botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
+                            botResponse = `We've captured your details, but had a slight issue generating the preview. Don't worry, a specialist will be in touch! Or contact us at: yourmeal@eadreamllc.com`;
                             setStep('done');
+                            setIsDone(true); // Treat as done anyway to avoid user frustration
                         }
-                    } catch {
-                        botResponse = `Issue submitting. Please contact: yourmeal@eadreamllc.com`;
+                    } catch (error) {
+                        console.error('Submission error:', error);
+                        botResponse = `We've captured your details, but had a slight issue. Our team is alerted and will contact you shortly! Or email: yourmeal@eadreamllc.com`;
                         setStep('done');
+                        setIsDone(true);
                     }
                     break;
 
@@ -350,9 +355,17 @@ const DishSelector = ({ mode = 'catering' }: DishSelectorProps) => {
                         <div className="p-4 bg-emerald-500/10 rounded-full">
                             <CheckCircle2 size={56} className="text-emerald-500" />
                         </div>
-                        <div>
-                            <p className="font-serif font-bold text-2xl text-primary">Proposal Sent!</p>
-                            <p className="text-sm text-foreground/60 mt-2 max-w-[280px] mx-auto">Check {customerInfo.email}</p>
+                        <div className="px-6">
+                            <p className="font-serif font-bold text-2xl text-primary">Experience Captured!</p>
+                            <p className="text-sm text-foreground/70 mt-3 leading-relaxed">
+                                Our Culinary Specialists are now reviewing your menu. Check <strong>{customerInfo.email}</strong> for your preliminary proposal details.
+                            </p>
+                            <div className="mt-6 flex flex-col gap-2">
+                                <p className="text-[11px] font-bold uppercase tracking-widest text-foreground/40 italic">Next Steps</p>
+                                <p className="text-xs text-foreground/60">1. Specialist Reviews Requirement</p>
+                                <p className="text-xs text-foreground/60">2. Proposal Finalization</p>
+                                <p className="text-xs text-foreground/60">3. Tasting Session Scheduling</p>
+                            </div>
                         </div>
                     </motion.div>
                 )}

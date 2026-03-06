@@ -113,6 +113,15 @@ Example format:
 - **Beef:** [description]
 - **Chicken:** [description]`;
 
+    // Try Grok First (User requested Grok first)
+    const grokResponse = await callGrok([
+        { role: 'system', content: 'You are an expert culinary writer for Etheleen & Alma\'s Dream.' },
+        { role: 'user', content: prompt }
+    ]);
+
+    if (grokResponse) return grokResponse;
+
+    // Fallback to Claude
     if (client) {
         try {
             const message = await client.messages.create({
@@ -127,17 +136,9 @@ Example format:
             const textBlock = message.content.find(block => block.type === 'text');
             if (textBlock?.text) return textBlock.text;
         } catch (error) {
-            console.warn('Claude protein generation failed, falling back to Grok:', error);
+            console.warn('Claude protein generation failed:', error);
         }
     }
-
-    // Try Grok Fallback
-    const grokResponse = await callGrok([
-        { role: 'system', content: 'You are an expert culinary writer for Etheleen & Alma\'s Dream.' },
-        { role: 'user', content: prompt }
-    ]);
-
-    if (grokResponse) return grokResponse;
 
     // Hardcoded fallback
     return proteins.map(p => `**${p}:** Expertly prepared ${preparation.toLowerCase()} style with our signature seasoning blend.`).join('\n');
@@ -154,7 +155,18 @@ Sides: ${sides}
 Example:
 - **Green Beans:** [description]`;
 
-    if (client && sidesList.length > 0) {
+    if (sidesList.length === 0) return '';
+
+    // Try Grok First
+    const grokResponse = await callGrok([
+        { role: 'system', content: 'You are an expert culinary writer for Etheleen & Alma\'s Dream.' },
+        { role: 'user', content: prompt }
+    ]);
+
+    if (grokResponse) return grokResponse;
+
+    // Fallback to Claude
+    if (client) {
         try {
             const message = await client.messages.create({
                 model: 'claude-3-5-sonnet-20241022',
@@ -168,18 +180,8 @@ Example:
             const textBlock = message.content.find(block => block.type === 'text');
             if (textBlock?.text) return textBlock.text;
         } catch (error) {
-            console.warn('Claude side generation failed, falling back to Grok:', error);
+            console.warn('Claude side generation failed:', error);
         }
-    }
-
-    // Try Grok Fallback
-    if (sidesList.length > 0) {
-        const grokResponse = await callGrok([
-            { role: 'system', content: 'You are an expert culinary writer for Etheleen & Alma\'s Dream.' },
-            { role: 'user', content: prompt }
-        ]);
-
-        if (grokResponse) return grokResponse;
     }
 
     // Hardcoded fallback

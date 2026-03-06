@@ -57,8 +57,7 @@ export async function POST(request: NextRequest) {
 
         const effectiveEventType = isPrivateRequest ? 'Private Dinner' : (eventType || 'Catering');
 
-        // Create the catering request
-        console.log('Creating catering request in DB...');
+        // 1. CREATE LEAD (CRITICAL STEP)
         const cateringRequest = await prisma.cateringRequest.create({
             data: {
                 customerName,
@@ -76,143 +75,137 @@ export async function POST(request: NextRequest) {
                 status: 'PENDING',
             },
         });
-        console.log('Catering request created:', cateringRequest.id);
+        console.log('Lead captured in DB:', cateringRequest.id);
 
-        // Build customer info for personalized proposal
-        const customerInfo: CustomerInfo = {
-            customerName,
-            customerEmail,
-            customerPhone: customerPhone || '',
-            eventDate: eventDate || 'TBD',
-            eventLocation: eventLocation || 'TBD',
-            eventType: effectiveEventType,
-            headcount: headcount || (isPrivateRequest ? 8 : 50),
-            proteins,
-            preparation: preparation || 'Chef\'s Choice',
-            sides: sides || 'Chef\'s Selection',
-            bread: bread || 'Artisan Rolls',
-            allergies: allergies || 'None'
-        };
+        // 2. GENERATE PROPOSAL (TRY AI, BUT FALLBACK IF FAILED)
+        let proposalContent: string;
+        try {
+            console.log('Generating AI proposal...');
+            proposalContent = await generatePersonalizedProposal(customerInfo);
+        } catch (aiError) {
+            console.error('AI proposal generation failed:', aiError);
+            // Bulletproof fallback so the customer NEVER sees an error
+            proposalContent = `
+# ETHELEEN & ALMA'S DREAM, LLC
+## INITIAL SERVICE INQUIRY
 
-        // Generate personalized proposal with all their answers populated
-        console.log('Generating personalized proposal with Claude...');
-        const proposalContent = await generatePersonalizedProposal(customerInfo);
-        console.log('Proposal content generated.');
+Thank you for your interest, ${customerName}! We have received your request for a ${effectiveEventType} on ${eventDate || 'TBD'}.
 
-        // Calculate estimated cost
+Our team is currently reviewing your custom menu selections:
+- **Proteins:** ${Array.isArray(proteins) ? proteins.join(', ') : proteins}
+- **Preparation:** ${preparation || 'Chef\'s Choice'}
+- **Sides:** ${sides || 'Chef\'s Selection'}
+- **Bread:** ${bread || 'Artisan Rolls'}
+
+A Culinary Specialist will review your requirements and follow up with a finalized, detailed proposal and pricing shortly.
+            `.trim();
+        }
+
+        // 3. CALCULATE PRICING
         let estimatedCost: number;
         let rate: number;
-
         if (isPrivateRequest) {
-            // Private Dinner: $1,000 per group of 8 guests
             const groups = Math.ceil((headcount || 8) / 8);
             estimatedCost = groups * 1000;
             rate = estimatedCost / (headcount || 8);
         } else {
-            // Catering: per plate pricing
-            const hasSteak = proteins.some((p: string) => p.toLowerCase().includes('steak'));
-            const hasSeafood = proteins.some((p: string) =>
-                p.toLowerCase().includes('seafood') ||
-                p.toLowerCase().includes('fish') ||
-                p.toLowerCase().includes('shrimp')
+            const hasSteak = Array.isArray(proteins) && proteins.some((p: string) => p.toLowerCase().includes('steak'));
+            const hasSeafood = Array.isArray(proteins) && proteins.some((p: string) =>
+                p.toLowerCase().includes('seafood') || p.toLowerCase().includes('fish') || p.toLowerCase().includes('shrimp')
             );
             rate = (hasSteak || hasSeafood) ? 30 : 25;
             estimatedCost = rate * (headcount || 50);
         }
 
-        // Create the proposal in DB (status: DRAFT - pending admin approval)
-        console.log('Creating proposal in DB...');
+        // 4. CREATE PROPOSAL RECORD
         const proposal = await prisma.proposal.create({
             data: {
                 content: proposalContent,
                 estimatedCost,
                 version: 1,
-                status: 'DRAFT', // Pending admin review
+                status: 'DRAFT',
                 requestId: cateringRequest.id,
             },
         });
 
-        // Generate proposal ID for customer reference
         const proposalRef = `EA-${cateringRequest.id.slice(-8).toUpperCase()}`;
 
-        // Send notifications (errors here should not block the overall success)
-        try {
-            // Send SMS thank you with their submission summary
-            if (customerPhone && customerPhone.toLowerCase() !== 'skip') {
-                await sendThankYouSms({
+        // 5. ASYNC NOTIFICATIONS (NON-BLOCKING)
+        // Fire and forget so the user doesn't wait
+        (async () => {
+            try {
+                if (customerPhone && customerPhone.toLowerCase() !== 'skip') {
+                    await sendThankYouSms({
+                        customerName,
+                        customerPhone,
+                        eventDate: eventDate || 'TBD',
+                        headcount: headcount || (isPrivateRequest ? 8 : 50),
+                        proteins,
+                        proposalId: proposalRef
+                    });
+                }
+
+                await sendCustomerConfirmation({
                     customerName,
-                    customerPhone,
+                    customerEmail,
+                    proposalRef,
+                    eventType: effectiveEventType,
                     eventDate: eventDate || 'TBD',
-                    headcount: headcount || 50,
+                    headcount: headcount || (isPrivateRequest ? 8 : 50),
                     proteins,
-                    proposalId: proposalRef
-                }).catch(e => console.error('SMS Failed:', e));
+                    preparation: preparation || 'Chef\'s choice',
+                    sides: sides || 'Chef\'s selection',
+                    bread: bread || 'Artisan rolls',
+                    allergies: allergies || 'None',
+                    estimatedCost,
+                    pricePerPerson: rate,
+                });
+
+                await sendAdminNotification({
+                    requestId: cateringRequest.id,
+                    proposalRef,
+                    customerName,
+                    customerEmail,
+                    customerPhone: customerPhone || 'Not provided',
+                    eventType: effectiveEventType,
+                    eventDate: eventDate || 'TBD',
+                    headcount: headcount || (isPrivateRequest ? 8 : 50),
+                    proteins,
+                    preparation: preparation || 'Not specified',
+                    sides: sides || 'Not specified',
+                    bread: bread || 'Not specified',
+                    allergies: allergies || 'None',
+                    estimatedCost,
+                    pricePerPerson: rate,
+                });
+
+                await prisma.cateringRequest.update({
+                    where: { id: cateringRequest.id },
+                    data: { status: 'PROPOSAL_SENT' },
+                });
+            } catch (notifyError) {
+                console.error('Background notification failed:', notifyError);
             }
+        })();
 
-            // Send customer confirmation email
-            await sendCustomerConfirmation({
-                customerName,
-                customerEmail,
-                proposalRef,
-                eventType: eventType || 'Special Event',
-                eventDate: eventDate || 'TBD',
-                headcount: headcount || 50,
-                proteins,
-                preparation: preparation || 'Chef\'s choice',
-                sides: sides || 'Chef\'s selection',
-                bread: bread || 'Artisan rolls',
-                allergies: allergies || 'None',
-                estimatedCost,
-                pricePerPerson: rate,
-            }).catch(e => console.error('Customer email failed:', e));
-
-            // Send admin notification email
-            await sendAdminNotification({
-                requestId: cateringRequest.id,
-                proposalRef,
-                customerName,
-                customerEmail,
-                customerPhone: customerPhone || 'Not provided',
-                eventType: eventType || 'Not specified',
-                eventDate: eventDate || 'TBD',
-                headcount: headcount || 50,
-                proteins,
-                preparation: preparation || 'Not specified',
-                sides: sides || 'Not specified',
-                bread: bread || 'Not specified',
-                allergies: allergies || 'None',
-                estimatedCost,
-                pricePerPerson: rate,
-            }).catch(e => console.error('Admin email failed:', e));
-        } catch (error) {
-            console.error('Notification error (non-blocking):', error);
-        }
-
-        // Update request status
-        await prisma.cateringRequest.update({
-            where: { id: cateringRequest.id },
-            data: { status: 'PROPOSAL_SENT' },
-        });
-
+        // 6. IMMEDIATE SUCCESS RESPONSE
         return NextResponse.json({
             success: true,
             requestId: cateringRequest.id,
             proposalId: proposal.id,
             proposalRef,
-            message: 'Your custom proposal has been sent to your email!'
+            message: 'Your experience is being crafted! Check your email for your preliminary proposal.'
         });
 
     } catch (error: unknown) {
+        // Only hits if INITIAL body parsing or DB connection fails entirely
         const errorObj = error instanceof Error ? error : new Error(String(error));
         await logError(errorObj, { source: 'CATERING_SUBMIT', path: '/api/catering/submit' });
+        console.error('Terminal error in catering submission:', error);
 
-        console.error('Error creating catering request:', error);
-        const errorMessage = errorObj.message;
-        const errorStack = errorObj.stack;
         return NextResponse.json({
-            error: 'Failed to create request',
-            details: errorMessage,
-            stack: process.env.NODE_ENV === 'development' ? errorStack : undefined
+            error: 'Database connection issue. We are alerted and will reach out if you provided info.',
+            details: errorObj.message
         }, { status: 500 });
     }
 }

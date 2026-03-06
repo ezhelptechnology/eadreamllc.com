@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     CheckCircle, XCircle, Clock, DollarSign, Calendar,
     Users, TrendingUp, AlertCircle, FileText, Send,
-    Edit, Eye, Download, RefreshCw, ChevronDown
+    Edit, Eye, Download, RefreshCw, ChevronDown,
+    CreditCard, ExternalLink, ArrowUpRight
 } from 'lucide-react';
 
 // =============================================================================
@@ -127,6 +128,9 @@ export default function AdminDashboard() {
 
             {/* Agent 2 Intelligence Panel */}
             <Agent2Panel suggestions={suggestions} />
+
+            {/* Stripe Payments Panel */}
+            <StripePaymentsPanel />
 
             {/* Proposals Table */}
             <ProposalsTable
@@ -368,6 +372,178 @@ function Agent2Panel({ suggestions }: { suggestions: Suggestion[] }) {
 }
 
 // =============================================================================
+// STRIPE PAYMENTS PANEL (DEMO MODE)
+// =============================================================================
+
+const DEMO_TRANSACTIONS = [
+    { id: 'txn_demo_001', date: 'Mar 3, 2026', client: 'Johnson Wedding', type: 'Private Dinner', amount: 2000, deposit: 1000, status: 'completed' },
+    { id: 'txn_demo_002', date: 'Mar 1, 2026', client: 'Davis Corporate', type: 'Premium Catering', amount: 3750, deposit: 1875, status: 'completed' },
+    { id: 'txn_demo_003', date: 'Feb 27, 2026', client: 'Williams Family', type: 'Classic Catering', amount: 1250, deposit: 625, status: 'completed' },
+    { id: 'txn_demo_004', date: 'Feb 24, 2026', client: 'Thompson Gala', type: 'Premium Catering', amount: 6000, deposit: 3000, status: 'pending' },
+];
+
+function StripePaymentsPanel() {
+    const [expanded, setExpanded] = useState(true);
+
+    const paymentMetrics = [
+        { label: 'Total Revenue', value: '$12,950', icon: DollarSign, color: 'text-green-400', bgColor: 'bg-green-400/10' },
+        { label: 'Deposits Collected', value: '$6,500', icon: CreditCard, color: 'text-[#635BFF]', bgColor: 'bg-[#635BFF]/10' },
+        { label: 'Pending Payments', value: '$3,000', icon: Clock, color: 'text-yellow-400', bgColor: 'bg-yellow-400/10' },
+        { label: 'Completed Events', value: '3', icon: CheckCircle, color: 'text-emerald-400', bgColor: 'bg-emerald-400/10' },
+    ];
+
+    const statusStyles: Record<string, string> = {
+        completed: 'bg-green-400/10 text-green-400 border-green-400/20',
+        pending: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20',
+    };
+
+    return (
+        <div className="max-w-7xl mx-auto px-6 py-4">
+            <motion.div
+                className="bg-white/5 backdrop-blur-xl border-2 border-[#635BFF]/30 rounded-2xl overflow-hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+            >
+                {/* Header */}
+                <div
+                    className="p-4 bg-gradient-to-r from-[#635BFF]/10 to-transparent border-b border-[#635BFF]/20 cursor-pointer"
+                    onClick={() => setExpanded(!expanded)}
+                >
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-[#635BFF] rounded-lg flex items-center justify-center">
+                                <CreditCard className="text-white" size={18} />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Payments & Billing</h3>
+                                <p className="text-xs text-white/60">Powered by Stripe</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-[#635BFF]/10 border border-[#635BFF]/20 rounded-full text-xs text-[#635BFF] font-semibold">
+                                <span className="w-1.5 h-1.5 bg-[#635BFF] rounded-full animate-pulse" />
+                                Demo Mode
+                            </span>
+                            <motion.div
+                                animate={{ rotate: expanded ? 180 : 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <ChevronDown size={20} />
+                            </motion.div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Content */}
+                <AnimatePresence>
+                    {expanded && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="p-6 space-y-6">
+                                {/* Demo Mode Banner */}
+                                <div className="flex items-center gap-3 p-4 bg-[#635BFF]/5 border border-[#635BFF]/15 rounded-xl">
+                                    <AlertCircle size={18} className="text-[#635BFF] flex-shrink-0" />
+                                    <p className="text-sm text-white/70">
+                                        <span className="text-[#635BFF] font-semibold">Demo Mode</span> — Connect your Stripe account to accept real payments. The data below is sample data for demonstration purposes.
+                                    </p>
+                                </div>
+
+                                {/* Payment Metrics */}
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                    {paymentMetrics.map((metric, index) => (
+                                        <motion.div
+                                            key={metric.label}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            className="p-4 bg-white/5 rounded-xl border border-white/5"
+                                        >
+                                            <div className={`p-2 ${metric.bgColor} rounded-lg w-fit mb-3`}>
+                                                <metric.icon className={metric.color} size={18} />
+                                            </div>
+                                            <div className="text-xl font-bold">{metric.value}</div>
+                                            <div className="text-xs text-white/50 mt-1">{metric.label}</div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+
+                                {/* Recent Transactions */}
+                                <div>
+                                    <h4 className="text-sm font-semibold text-white/80 mb-3">Recent Transactions</h4>
+                                    <div className="overflow-x-auto rounded-xl border border-white/10">
+                                        <table className="w-full text-sm">
+                                            <thead className="bg-white/5 border-b border-white/10">
+                                                <tr>
+                                                    <th className="px-4 py-3 text-left text-xs font-semibold text-white/60">Date</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-semibold text-white/60">Client</th>
+                                                    <th className="px-4 py-3 text-left text-xs font-semibold text-white/60 hidden sm:table-cell">Event Type</th>
+                                                    <th className="px-4 py-3 text-right text-xs font-semibold text-white/60">Deposit</th>
+                                                    <th className="px-4 py-3 text-right text-xs font-semibold text-white/60 hidden sm:table-cell">Total</th>
+                                                    <th className="px-4 py-3 text-center text-xs font-semibold text-white/60">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {DEMO_TRANSACTIONS.map((txn) => (
+                                                    <tr key={txn.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                                        <td className="px-4 py-3 text-white/70">{txn.date}</td>
+                                                        <td className="px-4 py-3 font-medium">{txn.client}</td>
+                                                        <td className="px-4 py-3 text-white/60 hidden sm:table-cell">{txn.type}</td>
+                                                        <td className="px-4 py-3 text-right font-semibold text-[#635BFF]">
+                                                            ${txn.deposit.toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right text-white/70 hidden sm:table-cell">
+                                                            ${txn.amount.toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-center">
+                                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${statusStyles[txn.status]}`}>
+                                                                {txn.status === 'completed' ? '✓ Paid' : '⏳ Pending'}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex flex-col sm:flex-row items-center gap-3">
+                                    <a
+                                        href="https://dashboard.stripe.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#635BFF] text-white rounded-xl font-semibold hover:bg-[#7A73FF] transition-all shadow-lg shadow-[#635BFF]/20"
+                                    >
+                                        <ExternalLink size={16} />
+                                        Open Stripe Dashboard
+                                        <ArrowUpRight size={14} />
+                                    </a>
+                                    <a
+                                        href="https://stripe.com/docs"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/5 border border-white/10 text-white/80 rounded-xl font-semibold hover:bg-white/10 transition-all"
+                                    >
+                                        <FileText size={16} />
+                                        Stripe Documentation
+                                    </a>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.div>
+        </div>
+    );
+}
+
+// =============================================================================
 // PROPOSALS TABLE
 // =============================================================================
 
@@ -414,8 +590,8 @@ function ProposalsTable({
                                     key={f}
                                     onClick={() => onFilterChange(f)}
                                     className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${filter === f
-                                            ? 'bg-[#D4AF37] text-black'
-                                            : 'bg-white/5 hover:bg-white/10'
+                                        ? 'bg-[#D4AF37] text-black'
+                                        : 'bg-white/5 hover:bg-white/10'
                                         }`}
                                 >
                                     {f.replace(/_/g, ' ')}
@@ -608,8 +784,8 @@ function ProposalDetailModal({
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all ${activeTab === tab.id
-                                        ? 'bg-white text-black'
-                                        : 'bg-white/5 hover:bg-white/10'
+                                    ? 'bg-white text-black'
+                                    : 'bg-white/5 hover:bg-white/10'
                                     }`}
                             >
                                 <tab.icon size={16} />
