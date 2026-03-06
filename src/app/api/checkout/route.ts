@@ -12,21 +12,11 @@ export async function POST(req: NextRequest) {
         });
 
         /* 
-        // Graceful fallback: if no Stripe key, return demo mode response
-        if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_your-stripe-secret-key-here') {
-            return NextResponse.json({
-                demo: true,
-                message: 'Stripe is in demo mode. Connect your Stripe account to accept real payments.',
-                url: 'https://stripe.com',
-            });
-        }
-
         const Stripe = (await import('stripe')).default;
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
             apiVersion: '2026-02-25.clover',
         });
         const body = await req.json();
-        */
         const {
             eventType = 'catering',     // 'catering' | 'private_dinner'
             guestCount = 1,
@@ -103,9 +93,11 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({ url: session.url, sessionId: session.id });
+        */
     } catch (error: unknown) {
         console.error('Stripe checkout error:', error);
         const message = error instanceof Error ? error.message : 'Failed to create checkout session';
         return NextResponse.json({ error: message }, { status: 500 });
     }
 }
+
