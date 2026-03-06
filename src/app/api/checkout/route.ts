@@ -1,13 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2026-02-25.clover',
-});
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
     try {
+        // Stripe integration temporarily deactivated - return placeholder
+        return NextResponse.json({
+            demo: true,
+            message: 'Stripe integration is currently in placeholder mode.',
+            url: 'https://stripe.com',
+        });
+
+        /* 
+        // Graceful fallback: if no Stripe key, return demo mode response
+        if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_your-stripe-secret-key-here') {
+            return NextResponse.json({
+                demo: true,
+                message: 'Stripe is in demo mode. Connect your Stripe account to accept real payments.',
+                url: 'https://stripe.com',
+            });
+        }
+
+        const Stripe = (await import('stripe')).default;
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2026-02-25.clover',
+        });
         const body = await req.json();
+        */
         const {
             eventType = 'catering',     // 'catering' | 'private_dinner'
             guestCount = 1,
